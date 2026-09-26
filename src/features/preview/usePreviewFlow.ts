@@ -26,8 +26,8 @@ export function usePreviewFlow() {
   const { quote, prevQuote, set } = useTrade();
   const { address, demo } = useWallet();
   const log = useTxLog();
-  const attempts = useRef(0);
-  const [tx, dispatchRaw] = useReducer((s: TxState, e: TxEvent) => txReducer(s, e, attempts.current), quote ? { s: "previewReady" } : initialTx);
+  const [attempts, setAttempts] = useState(0);
+  const [tx, dispatchRaw] = useReducer((s: TxState, e: TxEvent) => txReducer(s, e), quote ? { s: "previewReady" } : initialTx);
   const [flash, setFlash] = useState<Set<number>>(new Set());
   const cancel = useRef<(() => void) | null>(null);
   const logId = useRef<string | null>(null);
@@ -62,11 +62,11 @@ export function usePreviewFlow() {
   // Price-limit failure → keep old quote, fetch new, diff (S14).
   useEffect(() => {
     if (tx.s !== "failedOnChain" || !tx.priceLimit || !quote) return;
-    attempts.current += 1;
     dispatchRaw({ t: "QUOTE" });
     const shock = demo ? (tx.netuid ?? quote.legs.find((l) => l.kind !== "stakeRoot")?.netuid) : undefined;
     refresh(quote, { shock }).then((next) => {
       set({ prevQuote: quote, quote: next });
+      setAttempts((a) => a + 1);
       dispatchRaw({ t: "REQUOTED" });
     });
   }, [tx, quote, demo, refresh, set]);
@@ -115,7 +115,7 @@ export function usePreviewFlow() {
 
   const remove = (netuid: number) => quote && set({ quote: removeLeg(quote, netuid) });
   const diff = prevQuote && quote && tx.s === "requoteReady" ? diffQuotes(prevQuote, quote, cfg.guards) : null;
-  return { quote, tx, demo, confirm, expire, remove, diff, flash, attempts: attempts.current, reset: () => dispatchRaw({ t: "RESET" }) };
+  return { quote, tx, demo, confirm, expire, remove, diff, flash, attempts, reset: () => dispatchRaw({ t: "RESET" }) };
 }
 
 export type PreviewFlow = ReturnType<typeof usePreviewFlow>;

@@ -34,8 +34,8 @@ export function InvestSection({ m }: { m: TradeModel }) {
         ) : null}
       </div>
       {m.rule === "emitted" ? <p className="mt-2 text-[12px] text-muted">{t("trade.split.emittedNote")}</p> : null}
-      <div className="mt-3 hidden grid-cols-[22px_38px_1.4fr_1.4fr_1fr_1fr_60px_60px_110px] gap-3 px-2 text-[11px] font-semibold uppercase tracking-wider text-dim md:grid">
-        <span /><span /><span>{t("trade.table.subnet")}</span><span>{t("trade.table.job")}</span><span>{t("trade.table.like")}</span><span>{t("trade.table.impact")}</span><span>7d</span><span>{t("trade.table.share")}</span><span className="text-right">TAO</span>
+      <div className="mt-3 hidden grid-cols-[22px_38px_minmax(0,2fr)_minmax(0,1.1fr)_minmax(0,1fr)_64px_48px_96px] gap-3 px-2 text-[11px] font-semibold uppercase tracking-wider text-dim md:grid">
+        <span /><span /><span>{t("trade.table.subnet")}</span><span>{t("trade.table.like")}</span><span>{t("trade.table.impact")}</span><span>7d</span><span>{t("trade.table.share")}</span><span className="text-right">TAO</span>
       </div>
       <div className="mt-1 divide-y divide-line">
         {m.shown.length === 0 ? <p className="py-6 text-center text-[13px] text-muted">{t("trade.noRows")}</p> : m.shown.map((s) => <SubnetRow key={s.netuid} m={m} s={s} />)}

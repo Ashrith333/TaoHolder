@@ -2,7 +2,7 @@ import next from "eslint-config-next";
 
 const featureNames = ["account", "trade", "preview", "learn", "history", "wallet", "settings"];
 
-export default [
+const config = [
   ...next,
   { ignores: [".next/**", "node_modules/**", "index.html", "legacy/**"] },
   {
@@ -30,3 +30,5 @@ export default [
     },
   },
 ];
+
+export default config;

@@ -21,18 +21,18 @@ export function SubnetRow({ m, s }: { m: TradeModel; s: Subnet }) {
   const toggle = () => m.st.set({ selected: on ? m.selected.filter((n) => n !== s.netuid) : [...m.selected, s.netuid] });
   return (
     <div role="checkbox" aria-checked={on} tabIndex={0} onClick={toggle} onKeyDown={(e) => (e.key === " " || e.key === "Enter") && (e.preventDefault(), toggle())}
-      className={`flex min-h-16 cursor-pointer items-center gap-3 rounded-[12px] px-2 py-2 hover:bg-s2 md:grid md:grid-cols-[22px_38px_1.4fr_1.4fr_1fr_1fr_60px_60px_110px] ${skip ? "opacity-60" : ""}`}>
+      className={`flex min-h-16 cursor-pointer items-center gap-3 rounded-[12px] px-2 py-2 hover:bg-s2 md:grid md:grid-cols-[22px_38px_minmax(0,2fr)_minmax(0,1.1fr)_minmax(0,1fr)_64px_48px_96px] ${skip ? "opacity-60" : ""}`}>
       <Checkbox on={on} />
       <Badge netuid={s.netuid} />
       <span className="min-w-0 flex-1">
         <span className="block truncate text-[14px] font-semibold">{s.name} <span className="text-muted">SN{s.netuid}</span></span>
+        <span className="mt-0.5 hidden truncate text-[12px] text-muted md:block">{s.job}</span>
         <span className="mt-0.5 flex flex-wrap items-center gap-1 text-[12px] text-muted md:hidden">
           {s.job}
           {s.twin ? <Tag kind="like">{t("learn.like", { twin: s.twin })}</Tag> : null}
           {skip ? <Tag kind="pool">{t(`skip.${skip.reason}`)}</Tag> : leg ? <ImpactTag level={leg.impact} label={t(`impact.${leg.impact}`)} exact={formatPct(leg.slip, 2)} /> : null}
         </span>
       </span>
-      <span className="hidden truncate text-[13px] text-muted md:block">{s.job}</span>
       <span className="hidden md:block">{s.twin ? <Tag kind="like">{s.twin}</Tag> : null}</span>
       <span className="hidden md:block">{skip ? <Tag kind="pool">{t(`skip.${skip.reason}`)}</Tag> : leg ? <ImpactTag level={leg.impact} label={t(`impact.${leg.impact}`)} exact={formatPct(leg.slip, 2)} /> : null}</span>
       <span className="hidden md:block">{s.live ? <Change pct={s.live.change7d} /> : null}</span>

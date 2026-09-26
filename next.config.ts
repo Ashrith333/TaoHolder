@@ -12,6 +12,8 @@ const csp = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // content/subnets/*.json is read with fs at runtime (fallback when Supabase is empty).
+  outputFileTracingIncludes: { "/**": ["./content/**/*.json"] },
   async headers() {
     return [{ source: "/:path*", headers: [{ key: "Content-Security-Policy", value: csp }] }];
   },

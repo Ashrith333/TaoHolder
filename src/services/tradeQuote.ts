@@ -21,7 +21,7 @@ export function makeSellQuote(env: QuoteEnv, rows: SellRow[]): Quote {
 }
 
 /** Demo only: move one pool so a re-quote has something to show (Figma "prices moved"). */
-export function shockPool(pools: Map<number, SubnetLive>, netuid: number, factor = 0.6): Map<number, SubnetLive> {
+export function shockPool(pools: Map<number, SubnetLive>, netuid: number, factor = 0.02): Map<number, SubnetLive> {
   const p = pools.get(netuid);
   if (!p) return pools;
   const next = new Map(pools);

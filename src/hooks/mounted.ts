@@ -1,9 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
-/** Avoid hydration mismatch for values read from localStorage. */
+const noop = () => () => {};
+
+/** False during SSR and hydration, true after: avoids mismatches for localStorage-backed values. */
 export function useMounted() {
-  const [m, setM] = useState(false);
-  useEffect(() => setM(true), []);
-  return m;
+  return useSyncExternalStore(noop, () => true, () => false);
 }

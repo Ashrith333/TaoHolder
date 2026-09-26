@@ -71,7 +71,7 @@ export function PreviewDesk() {
           {q.side === "add" && q.legs.some((l) => l.kind === "invest") ? <p className="text-[12px] text-muted">{t("trade.risk")}</p> : null}
           <p className="text-[12px] text-muted">{t("preview.limitNote")}</p>
           <div className="flex gap-2">
-            <Link href="/trade" className="flex min-h-12 items-center justify-center rounded-[14px] border border-line px-4 font-bold">{t("preview.edit")}</Link>
+            <Link href="/trade" className="flex min-h-12 shrink-0 items-center justify-center whitespace-nowrap rounded-[14px] border border-line px-4 font-bold">{t("preview.edit")}</Link>
             <Button full disabled={q.legs.length === 0} onClick={() => f.confirm()}>{confirmLabel}</Button>
           </div>
         </div>

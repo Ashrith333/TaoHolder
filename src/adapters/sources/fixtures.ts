@@ -8,10 +8,10 @@ import type { ProviderFactory } from "./types";
 // SAMPLE DATA provider for local/demo mode. Demo coldkeys tweak the shape:
 // "demo-empty" → nothing held.
 function pools(): SubnetLive[] {
-  return poolsJson.pools.map((p) => ({
+  return poolsJson.pools.map(({ taoReserveTao, alphaReserve, ...p }) => ({
     ...p,
-    taoReserve: taoToRao(p.taoReserveTao),
-    alphaReserve: taoToRao(p.alphaReserve),
+    taoReserve: taoToRao(taoReserveTao),
+    alphaReserve: taoToRao(alphaReserve),
   }));
 }
 

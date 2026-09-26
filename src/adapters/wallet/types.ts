@@ -1,4 +1,4 @@
-// Wallet adapter contract. Only the injected signer is used — never signRaw, never keys.
+// Wallet adapter contract. Only the injected signer signs the built batch; no raw signing, never keys.
 export type InjectedAccount = { address: string; name?: string };
 export type Signer = unknown; // @polkadot/api Signer from the extension
 
