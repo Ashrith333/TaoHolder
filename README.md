@@ -1,30 +1,54 @@
-# TaoHolder
+# taoholder: the TAO holder desk
 
-taoholder.com. Single-file site: `index.html`. No build step. Fonts from Google Fonts, price data from CoinGecko (public endpoint, no key).
+See what you hold. Stake or invest in subnets. Sell back. One confirm.
+Built to **TH-PRD-002 v2.3**, with the look from the Figma file (black, white and red; dark by default).
+
+- **Stack:** Next.js (App Router) · TypeScript strict · Tailwind + CSS tokens · Zustand · TanStack Query · Zod · @polkadot/api · Supabase (config/content) · Vitest · Playwright
+- **Non-custodial:** the wallet signs one `utility.batchAll`. No raw signing, no keys, nothing stored server-side.
+
+## Run it
+
+```bash
+pnpm install
+cp .env.example .env.local        # NEXT_PUBLIC_CHAIN=local runs on sample data + Demo wallet
+pnpm dev                          # http://localhost:3000
+```
+
+`local` uses fixtures and the **Demo wallet** (in the Connect sheet). Demo buttons stand in for the wallet and chain, so you can see every result: approve, reject, prices moved, and no block. Set `NEXT_PUBLIC_CHAIN=mainnet` or `testnet` for live sources (see *Data sources*).
+
+| Command | What |
+|---|---|
+| `pnpm lint` | ESLint (feature boundaries, services stay pure) + line limits + security grep |
+| `pnpm typecheck` / `pnpm test` | tsc, Vitest unit tests (maths, guards, quote, diff, batch, config) |
+| `pnpm exec playwright test` | E2E flows on phone and laptop with the Demo wallet |
+| `pnpm content:check` | Zod-validates every JSON file in `content/` (runs before `build`) |
+| `pnpm db:seed` | Upserts `content/` into Supabase (needs `SUPABASE_DB_URL`) |
+
+## How it fits together
+
+```
+content/            JSON config + curated content (git source of truth, fallback)
+supabase/           migrations for the config DB (same documents, editable live)
+src/app/            routes only: each page renders <PageSections page="…"/>
+src/sections/       registry: section key → component (the swap point)
+src/features/       account · trade · preview · learn · history · wallet · settings
+src/services/       pure logic, bigint rao: weights, plan, guards, quote, quoteDiff, buildBatch, txMachine, sell
+src/adapters/       content loader (Supabase → JSON), data sources, wallets, chain submit, analytics
+src/components/ui/  Button, Seg, Chip, Tag/ImpactTag, Checkbox, Badge, Alert, Sheet, Row, Change
+```
+
+Config is loaded on the server for every request (60 s cache): **each document comes from Supabase if the row exists and passes Zod; otherwise from `content/`.** If Supabase is down or not configured, the app keeps running on `content/` JSON. `GET /api/config` shows what is being served and where each document came from (`origin`).
+
+See **[docs/CONFIG.md](docs/CONFIG.md)** for how to change features and guards, add an input source, or swap a section.
 
 ## Deploy
 
-Push to `main`, then Settings > Pages > Deploy from branch > `main` / root. Add `taoholder.com` as the custom domain and point DNS at GitHub Pages.
+Vercel (or any Node host): set the env vars from `.env.example`. The old one-file site is in `legacy/index.html`. If GitHub Pages still serves `taoholder.com` from `main`, point DNS at the new host before merging this branch to `main`.
 
-## Page structure
+## Before mainnet
 
-| Section | Content | Animation |
-|---|---|---|
-| Hero | Positioning statement, two CTAs, live TAO strip | Neural tree: 16s loop, golden pulse, labels morph SUBNETS / LEARN / BUILD / PARTICIPATE into INTELLIGENCE MARKETS / DISCOVER / COMPOSE / GOVERN, canopy expands into a web |
-| Network | Miners, validators, emissions, stakers | Brain-shaped cortex of nodes with signals propagating along edges |
-| Subnet index | SN, category, operator, coverage | |
-| Research | Four-part series | |
-| Tools | TaoProof, subnet index data | |
-| Participate | Acquire, stake, allocate | |
-
-Both canvases pause when off-screen and render a single still frame under `prefers-reduced-motion`.
-
-## Live strip
-
-Pulls price, 24h change, market cap, and volume for TAO from CoinGecko on load. If the request fails or is rate-limited, the strip stays hidden. Swap the endpoint for Taostats if you want subnet counts or emissions.
-
-## Fill in
-
-1. `Episode 01` to `03` links in the subnet index point at `#`.
-2. TaoProof has no link yet.
-3. Add an `og:image` (1200x630) once you have a still you like; the meta tag slot is in `<head>`.
+- Verify chain calls: [docs/adr/001-chain-calls.md](docs/adr/001-chain-calls.md) (T0).
+- Replace the **placeholder validator hotkeys** in `validators` (currently well-known dev addresses).
+- Replace the **sample subnet copy** and add real links and revenue.
+- Add a Taostats API key (`TAOSTATS_API_KEY`) and check the field names in `data_sources.config`.
+- Legal pages (`src/content-static/legal.ts`) after legal review (D9).

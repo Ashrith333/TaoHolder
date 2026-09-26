@@ -1,0 +1,24 @@
+{
+  "note": "Each page renders its enabled sections in order. Swap `component` for any key in src/sections/registry.tsx, reorder with `position`, hide with `enabled: false`. `when` = always | connected | disconnected.",
+  "sections": [
+    { "id": "account-hero", "page": "account", "component": "account.hero", "position": 10, "enabled": true, "props": { "when": "disconnected" } },
+    { "id": "account-total", "page": "account", "component": "account.total", "position": 20, "enabled": true, "props": { "when": "connected" } },
+    { "id": "account-cards", "page": "account", "component": "account.cards", "position": 30, "enabled": true, "props": { "when": "connected" } },
+    { "id": "account-allocation", "page": "account", "component": "account.allocation", "position": 40, "enabled": true, "props": { "when": "connected" } },
+    { "id": "account-positions", "page": "account", "component": "account.positions", "position": 50, "enabled": true, "props": { "when": "connected" } },
+
+    { "id": "trade-main", "page": "trade", "component": "trade.desk", "position": 10, "enabled": true, "props": {} },
+    { "id": "preview-main", "page": "preview", "component": "preview.desk", "position": 10, "enabled": true, "props": {} },
+
+    { "id": "learn-catalog", "page": "learn", "component": "learn.catalog", "position": 10, "enabled": true, "props": {} },
+
+    { "id": "subnet-head", "page": "subnet", "component": "learn.subnetHead", "position": 10, "enabled": true, "props": {} },
+    { "id": "subnet-market", "page": "subnet", "component": "learn.market", "position": 20, "enabled": true, "props": {} },
+    { "id": "subnet-business", "page": "subnet", "component": "learn.business", "position": 30, "enabled": true, "props": {} },
+    { "id": "subnet-links", "page": "subnet", "component": "learn.links", "position": 40, "enabled": true, "props": {} },
+
+    { "id": "history-main", "page": "history", "component": "history.list", "position": 10, "enabled": true, "props": { "when": "connected" } },
+    { "id": "settings-main", "page": "settings", "component": "settings.panel", "position": 10, "enabled": true, "props": {} },
+    { "id": "sections-notice", "page": "account", "component": "common.notice", "position": 5, "enabled": false, "props": { "text": "Example of a config-driven notice section." } }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "reviewedAt": "2026-09-26",
+  "buckets": {
+    "core": { "label": "Core", "type": "list", "netuids": [64, 4, 51, 3, 56] },
+    "top10": { "label": "Top 10", "type": "rule", "sortBy": "emissionShare", "limit": 10 },
+    "compute": { "label": "Compute", "type": "rule", "layer": "compute" },
+    "inference": { "label": "Inference", "type": "rule", "layer": "inference" },
+    "other": { "label": "Other", "type": "rule", "layerNot": ["compute", "inference"] }
+  },
+  "order": ["core", "bookmarks", "top10", "compute", "inference"],
+  "learnOrder": ["bookmarks", "all", "compute", "inference", "other"],
+  "exclude": []
+}

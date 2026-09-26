@@ -1,0 +1,197 @@
+{
+  "note": "SAMPLE DATA for local and demo mode",
+  "pools": [
+    {
+      "netuid": 1,
+      "priceTao": 0.017,
+      "taoReserveTao": 5200,
+      "alphaReserve": 305882.353,
+      "weights": {
+        "tao": 0.5,
+        "alpha": 0.5
+      },
+      "feeRate": 0.0005,
+      "emissionShare": 0.015,
+      "emissionOn": true,
+      "mcapTao": 10920,
+      "change7d": 0.2,
+      "change30d": -1.1
+    },
+    {
+      "netuid": 3,
+      "priceTao": 0.038,
+      "taoReserveTao": 15000,
+      "alphaReserve": 394736.842,
+      "weights": {
+        "tao": 0.5,
+        "alpha": 0.5
+      },
+      "feeRate": 0.0005,
+      "emissionShare": 0.035,
+      "emissionOn": true,
+      "mcapTao": 31500,
+      "change7d": 9.7,
+      "change30d": 21
+    },
+    {
+      "netuid": 4,
+      "priceTao": 0.071,
+      "taoReserveTao": 41000,
+      "alphaReserve": 577464.789,
+      "weights": {
+        "tao": 0.5,
+        "alpha": 0.5
+      },
+      "feeRate": 0.0005,
+      "emissionShare": 0.061,
+      "emissionOn": true,
+      "mcapTao": 86100,
+      "change7d": -1.8,
+      "change30d": 3.5
+    },
+    {
+      "netuid": 8,
+      "priceTao": 0.027,
+      "taoReserveTao": 11000,
+      "alphaReserve": 407407.407,
+      "weights": {
+        "tao": 0.5,
+        "alpha": 0.5
+      },
+      "feeRate": 0.0005,
+      "emissionShare": 0.024,
+      "emissionOn": true,
+      "mcapTao": 23100,
+      "change7d": 1.1,
+      "change30d": -2
+    },
+    {
+      "netuid": 9,
+      "priceTao": 0.019,
+      "taoReserveTao": 7000,
+      "alphaReserve": 368421.053,
+      "weights": {
+        "tao": 0.5,
+        "alpha": 0.5
+      },
+      "feeRate": 0.0005,
+      "emissionShare": 0.018,
+      "emissionOn": false,
+      "mcapTao": 14700,
+      "change7d": -5.6,
+      "change30d": -12.3
+    },
+    {
+      "netuid": 12,
+      "priceTao": 0.024,
+      "taoReserveTao": 8000,
+      "alphaReserve": 333333.333,
+      "weights": {
+        "tao": 0.5,
+        "alpha": 0.5
+      },
+      "feeRate": 0.0005,
+      "emissionShare": 0.02,
+      "emissionOn": true,
+      "mcapTao": 16800,
+      "change7d": 3.3,
+      "change30d": 6
+    },
+    {
+      "netuid": 13,
+      "priceTao": 0.022,
+      "taoReserveTao": 9000,
+      "alphaReserve": 409090.909,
+      "weights": {
+        "tao": 0.5,
+        "alpha": 0.5
+      },
+      "feeRate": 0.0005,
+      "emissionShare": 0.021,
+      "emissionOn": true,
+      "mcapTao": 18900,
+      "change7d": -0.4,
+      "change30d": 4.4
+    },
+    {
+      "netuid": 19,
+      "priceTao": 0.029,
+      "taoReserveTao": 12000,
+      "alphaReserve": 413793.103,
+      "weights": {
+        "tao": 0.5,
+        "alpha": 0.5
+      },
+      "feeRate": 0.0005,
+      "emissionShare": 0.027,
+      "emissionOn": true,
+      "mcapTao": 25200,
+      "change7d": 0.8,
+      "change30d": 1.9
+    },
+    {
+      "netuid": 51,
+      "priceTao": 0.052,
+      "taoReserveTao": 26000,
+      "alphaReserve": 500000,
+      "weights": {
+        "tao": 0.5,
+        "alpha": 0.5
+      },
+      "feeRate": 0.0005,
+      "emissionShare": 0.044,
+      "emissionOn": true,
+      "mcapTao": 54600,
+      "change7d": 2.4,
+      "change30d": -4.1
+    },
+    {
+      "netuid": 56,
+      "priceTao": 0.031,
+      "taoReserveTao": 640,
+      "alphaReserve": 20645.161,
+      "weights": {
+        "tao": 0.5,
+        "alpha": 0.5
+      },
+      "feeRate": 0.0005,
+      "emissionShare": 0.029,
+      "emissionOn": true,
+      "mcapTao": 1344,
+      "change7d": -3.2,
+      "change30d": -8.8
+    },
+    {
+      "netuid": 62,
+      "priceTao": 0.021,
+      "taoReserveTao": 4300,
+      "alphaReserve": 204761.905,
+      "weights": {
+        "tao": 0.5,
+        "alpha": 0.5
+      },
+      "feeRate": 0.0005,
+      "emissionShare": 0.019,
+      "emissionOn": true,
+      "mcapTao": 9030,
+      "change7d": 12.4,
+      "change30d": 40.2
+    },
+    {
+      "netuid": 64,
+      "priceTao": 0.114,
+      "taoReserveTao": 98000,
+      "alphaReserve": 859649.123,
+      "weights": {
+        "tao": 0.5,
+        "alpha": 0.5
+      },
+      "feeRate": 0.0005,
+      "emissionShare": 0.082,
+      "emissionOn": true,
+      "mcapTao": 205800,
+      "change7d": 6.1,
+      "change30d": 14.2
+    }
+  ]
+}

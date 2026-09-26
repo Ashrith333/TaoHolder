@@ -1,0 +1,24 @@
+{
+  "netuid": 62,
+  "name": "Ridges",
+  "layer": "other",
+  "job": "Coding agents",
+  "twin": "Cognition",
+  "stage": "early",
+  "revenueUsd": null,
+  "revenueDate": null,
+  "product": "Autonomous agents that fix software issues.",
+  "risks": [
+    "Early product"
+  ],
+  "wins": [],
+  "team": [],
+  "links": {
+    "site": "",
+    "x": "",
+    "docs": "",
+    "github": "",
+    "taostats": "https://taostats.io/subnets/62"
+  },
+  "curatedAt": "2026-09-26"
+}

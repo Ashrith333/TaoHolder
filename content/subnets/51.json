@@ -1,0 +1,24 @@
+{
+  "netuid": 51,
+  "name": "Celium",
+  "layer": "compute",
+  "job": "GPU rental",
+  "twin": "CoreWeave",
+  "stage": "shipping",
+  "revenueUsd": null,
+  "revenueDate": null,
+  "product": "Rent GPUs from a network of providers, priced below cloud rates.",
+  "risks": [
+    "Price competition"
+  ],
+  "wins": [],
+  "team": [],
+  "links": {
+    "site": "",
+    "x": "",
+    "docs": "",
+    "github": "",
+    "taostats": "https://taostats.io/subnets/51"
+  },
+  "curatedAt": "2026-09-26"
+}

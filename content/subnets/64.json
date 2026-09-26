@@ -1,0 +1,26 @@
+{
+  "netuid": 64,
+  "name": "Chutes",
+  "layer": "inference",
+  "job": "Serverless inference",
+  "twin": "Together AI",
+  "stage": "shipping",
+  "revenueUsd": null,
+  "revenueDate": null,
+  "product": "Runs open models behind a simple API. Developers pay per call; miners supply GPUs.",
+  "risks": [
+    "Concentrated miners"
+  ],
+  "wins": [
+    "Large share of open-model traffic"
+  ],
+  "team": [],
+  "links": {
+    "site": "",
+    "x": "",
+    "docs": "",
+    "github": "",
+    "taostats": "https://taostats.io/subnets/64"
+  },
+  "curatedAt": "2026-09-26"
+}

@@ -1,0 +1,32 @@
+{
+  "note": "SAMPLE DATA",
+  "freeTao": 88.4,
+  "root": {
+    "stakedTao": 142.2,
+    "hotkey": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+    "change7d": 0.4
+  },
+  "positions": [
+    {
+      "netuid": 64,
+      "alpha": 1200.5,
+      "change7d": 6.1
+    },
+    {
+      "netuid": 4,
+      "alpha": 890,
+      "change7d": -1.8
+    },
+    {
+      "netuid": 51,
+      "alpha": 1427,
+      "change7d": 2.4
+    },
+    {
+      "netuid": 3,
+      "alpha": 650,
+      "change7d": 9.7
+    }
+  ],
+  "change7d": 2.3
+}

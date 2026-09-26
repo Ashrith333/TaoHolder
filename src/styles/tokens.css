@@ -1,0 +1,58 @@
+/* Theme tokens (PRD 8.2, Figma "Design system"). Black, white, greys and red only (D13). */
+:root,
+[data-theme="dark"] {
+  --bg: #0a0a0a;
+  --s1: #141414;
+  --s2: #1c1c1c;
+  --s3: #262626;
+  --line: #2e2e2e;
+  --text: #ffffff;
+  --muted: #a3a3a3;
+  --dim: #6b6b6b;
+  --primary: #ffffff;
+  --on-primary: #0a0a0a;
+  --red: #ff4d4f;
+  --red-soft: #2a1415;
+  --card-border: transparent;
+  /* allocation greys, darkest = root */
+  --g1: #ffffff;
+  --g2: #c7c7c7;
+  --g3: #9a9a9a;
+  --g4: #707070;
+  --g5: #4d4d4d;
+  --g6: #2e2e2e;
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --bg: #ffffff;
+  --s1: #ffffff;
+  --s2: #f5f5f5;
+  --s3: #ebebeb;
+  --line: #e2e2e2;
+  --text: #0a0a0a;
+  --muted: #666666;
+  --dim: #9a9a9a;
+  --primary: #0a0a0a;
+  --on-primary: #ffffff;
+  --red: #d92d20;
+  --red-soft: #fef1f0;
+  --card-border: #e2e2e2;
+  --g1: #0a0a0a;
+  --g2: #3d3d3d;
+  --g3: #666666;
+  --g4: #8f8f8f;
+  --g5: #b8b8b8;
+  --g6: #e2e2e2;
+  color-scheme: light;
+}
+
+:root {
+  --radius-card: 16px;
+  --radius-input: 14px;
+  --radius-button: 14px;
+  --radius-tag: 6px;
+  --font: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --summary-w: 380px;
+  --max-w: 1280px;
+}

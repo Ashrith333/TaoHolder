@@ -1,0 +1,22 @@
+{
+  "netuid": 56,
+  "name": "Gradients",
+  "layer": "compute",
+  "job": "AutoML fine-tuning",
+  "twin": "Hugging Face AutoTrain",
+  "stage": "shipping",
+  "revenueUsd": null,
+  "revenueDate": null,
+  "product": "Fine-tune models in a few clicks; miners compete to train the best version.",
+  "risks": [],
+  "wins": [],
+  "team": [],
+  "links": {
+    "site": "",
+    "x": "",
+    "docs": "",
+    "github": "",
+    "taostats": "https://taostats.io/subnets/56"
+  },
+  "curatedAt": "2026-09-26"
+}

@@ -1,0 +1,9 @@
+{
+  "default": { "name": "Partner A (placeholder)", "hotkey": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", "maxTake": 0.18, "take": 0.09 },
+  "perNetuid": {
+    "0": { "name": "Partner A (placeholder)", "hotkey": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", "take": 0.09 },
+    "64": { "name": "Partner A (placeholder)", "hotkey": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", "take": 0.09 },
+    "4": { "name": "Partner B (placeholder)", "hotkey": "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty", "take": 0.1 }
+  },
+  "fallback": { "name": "Partner B (placeholder)", "hotkey": "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty", "take": 0.1 }
+}

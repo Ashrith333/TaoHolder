@@ -1,0 +1,49 @@
+{
+  "note": "SAMPLE DATA",
+  "items": [
+    {
+      "id": "h1",
+      "action": "invest",
+      "label": "Invest · 4 legs",
+      "legs": 4,
+      "time": "2026-09-25T12:00:00.000Z",
+      "taoIn": 35,
+      "taoOut": 0,
+      "status": "done",
+      "hash": "0xa1"
+    },
+    {
+      "id": "h2",
+      "action": "stake",
+      "label": "Stake TAO",
+      "legs": 1,
+      "time": "2026-09-23T12:00:00.000Z",
+      "taoIn": 15,
+      "taoOut": 0,
+      "status": "done",
+      "hash": "0xa2"
+    },
+    {
+      "id": "h3",
+      "action": "sell",
+      "label": "Sell · Celium",
+      "legs": 1,
+      "time": "2026-09-20T12:00:00.000Z",
+      "taoIn": 0,
+      "taoOut": 12.2,
+      "status": "done",
+      "hash": "0xa3"
+    },
+    {
+      "id": "h4",
+      "action": "invest",
+      "label": "Invest · 3 legs",
+      "legs": 3,
+      "time": "2026-09-16T12:00:00.000Z",
+      "taoIn": 20,
+      "taoOut": 0,
+      "status": "cancelled",
+      "hash": "0xa4"
+    }
+  ]
+}
