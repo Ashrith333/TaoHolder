@@ -1,0 +1,22 @@
+{
+  "netuid": 1,
+  "name": "Apex",
+  "layer": "inference",
+  "job": "Agentic reasoning",
+  "twin": "OpenAI",
+  "stage": "early",
+  "revenueUsd": null,
+  "revenueDate": null,
+  "product": "Miners compete to answer hard reasoning tasks.",
+  "risks": [],
+  "wins": [],
+  "team": [],
+  "links": {
+    "site": "",
+    "x": "",
+    "docs": "",
+    "github": "",
+    "taostats": "https://taostats.io/subnets/1"
+  },
+  "curatedAt": "2026-09-26"
+}

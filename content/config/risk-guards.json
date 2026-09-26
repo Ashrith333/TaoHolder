@@ -1,0 +1,17 @@
+{
+  "feeBufferTao": 0.08,
+  "minLegTao": 0.01,
+  "warnSlip": 0.025,
+  "warnPoolShare": 0.02,
+  "minPoolTao": 1000,
+  "quoteTtlSec": 45,
+  "limitTolerance": 0.005,
+  "sellDustTao": 0.002,
+  "dropAfterSec": 60,
+  "diffSlipPts": 0.002,
+  "diffOutPct": 0.005,
+  "impactLowBelow": 0.005,
+  "impactHighAbove": 0.025,
+  "maxGuardPasses": 5,
+  "stakeStepPct": 5
+}

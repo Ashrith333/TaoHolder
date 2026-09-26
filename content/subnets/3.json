@@ -1,0 +1,26 @@
+{
+  "netuid": 3,
+  "name": "Templar",
+  "layer": "compute",
+  "job": "Distributed training",
+  "twin": "Mosaic ML",
+  "stage": "early",
+  "revenueUsd": null,
+  "revenueDate": null,
+  "product": "Trains large models across many machines on the open internet.",
+  "risks": [
+    "Research risk"
+  ],
+  "wins": [
+    "Trained a large model across open miners"
+  ],
+  "team": [],
+  "links": {
+    "site": "",
+    "x": "",
+    "docs": "",
+    "github": "",
+    "taostats": "https://taostats.io/subnets/3"
+  },
+  "curatedAt": "2026-09-26"
+}

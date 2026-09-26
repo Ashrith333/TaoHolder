@@ -1,0 +1,14 @@
+{
+  "revenueOnSubnetPage": true,
+  "revenueSplitRule": true,
+  "revenueMinRows": 2,
+  "usdToggle": true,
+  "validatorChoice": false,
+  "mevShield": false,
+  "defaultTheme": "dark",
+  "themes": ["dark", "light", "auto"],
+  "defaultStakePct": 30,
+  "defaultModes": ["stake", "invest"],
+  "demoWallet": true,
+  "splitRules": ["equal", "mcap", "emitted", "revenue", "custom"]
+}

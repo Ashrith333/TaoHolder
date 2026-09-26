@@ -1,0 +1,9 @@
+{
+  "wallets": [
+    { "id": "talisman", "name": "Talisman", "injectedKey": "talisman", "installUrl": "https://talisman.xyz/download" },
+    { "id": "taocom", "name": "TAO.com wallet", "injectedKey": "bittensor", "installUrl": "https://chromewebstore.google.com/search/tao.com%20wallet" },
+    { "id": "subwallet", "name": "SubWallet", "injectedKey": "subwallet-js", "installUrl": "https://www.subwallet.app/download.html" },
+    { "id": "polkadotjs", "name": "Polkadot.js", "injectedKey": "polkadot-js", "installUrl": "https://polkadot.js.org/extension/" }
+  ],
+  "ss58Prefix": 42
+}

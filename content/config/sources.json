@@ -1,0 +1,27 @@
+{
+  "sources": [
+    { "id": "fixtures-subnets", "kind": "subnets", "provider": "fixtures", "network": "local", "priority": 10, "enabled": true, "config": {} },
+    { "id": "fixtures-pools", "kind": "pools", "provider": "fixtures", "network": "local", "priority": 10, "enabled": true, "config": {} },
+    { "id": "fixtures-positions", "kind": "positions", "provider": "fixtures", "network": "local", "priority": 10, "enabled": true, "config": {} },
+    { "id": "fixtures-history", "kind": "history", "provider": "fixtures", "network": "local", "priority": 10, "enabled": true, "config": {} },
+    { "id": "fixtures-price", "kind": "price", "provider": "fixtures", "network": "local", "priority": 10, "enabled": true, "config": { "usd": 287.5 } },
+    { "id": "local-explorer", "kind": "explorer", "provider": "template", "network": "local", "priority": 10, "enabled": true, "url": "https://taostats.io/extrinsic/{hash}", "config": {} },
+
+    { "id": "taostats-subnets", "kind": "subnets", "provider": "taostats", "network": "mainnet", "priority": 10, "enabled": true, "url": "https://api.taostats.io/api", "config": { "apiKeyEnv": "TAOSTATS_API_KEY", "subnetsPath": "/subnet/latest/v1?limit=256", "poolsPath": "/dtao/pool/latest/v1?limit=256", "historyPath": "/dtao/pool/history/v1?netuid={netuid}&frequency=by_day&limit=30" } },
+    { "id": "taostats-pools", "kind": "pools", "provider": "taostats", "network": "mainnet", "priority": 10, "enabled": true, "url": "https://api.taostats.io/api", "config": { "apiKeyEnv": "TAOSTATS_API_KEY", "poolsPath": "/dtao/pool/latest/v1?limit=256" } },
+    { "id": "taostats-positions", "kind": "positions", "provider": "taostats", "network": "mainnet", "priority": 10, "enabled": true, "url": "https://api.taostats.io/api", "config": { "apiKeyEnv": "TAOSTATS_API_KEY", "stakePath": "/dtao/stake_balance/latest/v1?coldkey={coldkey}&limit=200", "accountPath": "/account/latest/v1?address={coldkey}" } },
+    { "id": "taostats-history", "kind": "history", "provider": "taostats", "network": "mainnet", "priority": 10, "enabled": true, "url": "https://api.taostats.io/api", "config": { "apiKeyEnv": "TAOSTATS_API_KEY", "path": "/delegation/v1?nominator={coldkey}&page={page}&limit={limit}" } },
+    { "id": "coingecko-price", "kind": "price", "provider": "coingecko", "network": "mainnet", "priority": 10, "enabled": true, "url": "https://api.coingecko.com/api/v3/simple/price?ids=bittensor&vs_currencies=usd", "config": {} },
+    { "id": "finney-http", "kind": "rpc_http", "provider": "subtensor", "network": "mainnet", "priority": 10, "enabled": true, "url": "https://entrypoint-finney.opentensor.ai", "config": {} },
+    { "id": "finney-ws", "kind": "rpc_ws", "provider": "subtensor", "network": "mainnet", "priority": 10, "enabled": true, "url": "wss://entrypoint-finney.opentensor.ai:443", "config": {} },
+    { "id": "taostats-explorer", "kind": "explorer", "provider": "template", "network": "mainnet", "priority": 10, "enabled": true, "url": "https://taostats.io/extrinsic/{hash}", "config": {} },
+
+    { "id": "testnet-ws", "kind": "rpc_ws", "provider": "subtensor", "network": "testnet", "priority": 10, "enabled": true, "url": "wss://test.finney.opentensor.ai:443", "config": {} },
+    { "id": "testnet-fixtures-subnets", "kind": "subnets", "provider": "fixtures", "network": "testnet", "priority": 50, "enabled": true, "config": {} },
+    { "id": "testnet-fixtures-pools", "kind": "pools", "provider": "fixtures", "network": "testnet", "priority": 50, "enabled": true, "config": {} },
+    { "id": "testnet-fixtures-positions", "kind": "positions", "provider": "fixtures", "network": "testnet", "priority": 50, "enabled": true, "config": {} },
+    { "id": "testnet-fixtures-history", "kind": "history", "provider": "fixtures", "network": "testnet", "priority": 50, "enabled": true, "config": {} },
+    { "id": "testnet-fixtures-price", "kind": "price", "provider": "fixtures", "network": "testnet", "priority": 50, "enabled": true, "config": { "usd": 287.5 } },
+    { "id": "testnet-explorer", "kind": "explorer", "provider": "template", "network": "testnet", "priority": 10, "enabled": true, "url": "https://taostats.io/extrinsic/{hash}?network=test", "config": {} }
+  ]
+}

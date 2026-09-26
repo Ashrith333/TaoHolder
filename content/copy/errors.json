@@ -1,0 +1,11 @@
+{
+  "SlippageTooHigh": "Price moved past the limit. Nothing was spent.",
+  "AmountTooLow": "One part is below the network minimum.",
+  "NotEnoughBalanceToStake": "Not enough free TAO.",
+  "NotEnoughStakeToWithdraw": "Not enough staked to sell that amount.",
+  "SubtokenDisabled": "Trading is paused on this subnet.",
+  "HotKeyAccountNotExists": "The validator is not registered.",
+  "StakingRateLimitExceeded": "Too many stake changes in a short time. Try again in a minute.",
+  "InsufficientLiquidity": "The pool is too small for this amount.",
+  "default": "The network rejected this transaction."
+}
