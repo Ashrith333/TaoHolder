@@ -4,6 +4,7 @@ import historyJson from "@content/fixtures/history.json";
 import { taoToRao } from "@/services/rao";
 import type { HistoryTx, SubnetLive } from "@/services/types";
 import type { ProviderFactory } from "./types";
+import { buildHistory } from "./historyBuilder";
 
 // SAMPLE DATA provider for local/demo mode. Demo coldkeys tweak the shape:
 // "demo-empty" → nothing held.
@@ -46,7 +47,10 @@ export const fixtures: ProviderFactory = {
   }),
   history: () => ({
     history: async (coldkey, page, limit) => {
-      const items = coldkey.startsWith("demo-empty") ? [] : (historyJson.items as HistoryTx[]);
+      // SAMPLE: a real mainnet account's feeds, run through the same builder as Taostats.
+      const items: HistoryTx[] = coldkey.startsWith("demo-empty")
+        ? []
+        : buildHistory({ extrinsics: historyJson.extrinsics, stakeEvents: historyJson.stakeEvents, transfers: historyJson.transfers }, historyJson.coldkey);
       return { items: items.slice(page * limit, (page + 1) * limit), hasMore: (page + 1) * limit < items.length };
     },
   }),

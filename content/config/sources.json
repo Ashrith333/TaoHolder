@@ -153,9 +153,10 @@
         "apiKeyEnv": "TAOSTATS_API_KEY",
         "path": "/delegation/v1?nominator={coldkey}&page={page}&limit={limit}",
         "cacheSec": {
-          "history": 300
+          "history": 120
         },
-        "transfersPath": "/transfer/v1?address={coldkey}&page={page}&limit={limit}"
+        "transfersPath": "/transfer/v1?address={coldkey}&page={page}&limit={limit}",
+        "extrinsicsPath": "/extrinsic/v1?signer_address={coldkey}&page={page}&limit={limit}"
       }
     },
     {

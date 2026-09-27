@@ -17,7 +17,7 @@ describe("history", () => {
     const g = groupLegs(mixed);
     expect(g.stake).toHaveLength(1);
     expect(g.invest.map((l) => l.netuid)).toEqual([64, 9]);
-    expect(summarize(mixed)).toEqual({ kind: "stakeInvest", taoIn: 2, taoOut: 0, subnets: 2 });
+    expect(summarize(mixed)).toMatchObject({ kind: "stakeInvest", taoIn: 2, taoOut: 0, subnets: 2 });
   });
 
   it("sell and transfer summaries", () => {
@@ -33,15 +33,20 @@ describe("history", () => {
     expect([mixed, sell, xfer].filter((t) => matchesFilter(t, "transfer"))).toEqual([xfer]);
   });
 
-  it("merges a local trade with the indexer copy by block; keeps local-only failures", () => {
+  it("indexer copy wins (matched by hash); local-only entries stay until indexed", () => {
     const local = [
-      trade({ id: "L1", block: 100, status: "pending", legs: [{ type: "invest", netuid: 64, tao: 1, estimate: true }] }),
+      trade({ id: "L1", hash: "0xabc", status: "pending", legs: [{ type: "invest", netuid: 64, tao: 1, estimate: true }] }),
       trade({ id: "L2", time: "2026-09-27T11:00:00Z", status: "failed", reason: "Price moved", legs: [{ type: "invest", netuid: 4, tao: 1, estimate: true }] }),
     ];
-    const remote = [trade({ id: "R1", block: 100, hash: "100-3", legs: [{ type: "invest", netuid: 64, tao: 1, tokens: 14.2 }] })];
+    const remote = [trade({ id: "100-3", hash: "0xabc", status: "failed", reasonCode: "SlippageTooHigh", legs: [{ type: "invest", netuid: 64, tao: 1, estimate: true }] })];
     const m = mergeHistory(local, remote);
-    expect(m).toHaveLength(2);
-    expect(m[0]).toMatchObject({ id: "L2", status: "failed" });
-    expect(m[1]).toMatchObject({ id: "L1", status: "done", legs: [{ tokens: 14.2 }] });
+    expect(m.map((t) => t.id)).toEqual(["L2", "100-3"]);
+    expect(m[1]).toMatchObject({ status: "failed", reasonCode: "SlippageTooHigh" });
+  });
+  it("titles for moves, stake received, validator changes and unknown calls", () => {
+    expect(summarize(trade({ legs: [{ type: "move", netuid: 64, fromNetuid: 3, tao: 0, tokens: 2 }] })).kind).toBe("moved");
+    expect(summarize(trade({ legs: [{ type: "receiveStake", netuid: 9, tao: 0.02, tokens: 0.8 }] })).kind).toBe("receivedStake");
+    expect(summarize({ ...trade({}), kind: "validatorChange", legs: [{ type: "move", netuid: 9, tao: 0 }] }).kind).toBe("validatorChange");
+    expect(summarize({ ...trade({}), kind: "other", call: "Proxy.add_proxy" }).kind).toBe("other");
   });
 });

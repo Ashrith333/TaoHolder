@@ -21,6 +21,12 @@ test("history: one clear card per transaction, stake and invest shown separately
   await expect(list.getByRole("button", { name: /Staked TAO \+ invested in 4 subnets/ }).first()).toBeVisible();
   await expect(list.getByRole("button", { name: /Invested in 4 subnets.*Failed/ }).first()).toBeVisible();
   await expect(page.getByText("Price moved past the limit. Nothing was spent.").first()).toBeVisible();
+  // Real-data cases from the sample feed
+  await expect(list.getByRole("button", { name: /Invested in 2 subnets.*Failed/ }).first()).toBeVisible();
+  await expect(page.getByText("The validator is not registered.").first()).toBeVisible();
+  await expect(list.getByRole("button", { name: /Validator updated automatically/ })).toBeVisible();
+  await expect(list.getByRole("button", { name: /Received stake from another wallet/ }).first()).toBeVisible();
+  await expect(list.getByRole("button", { name: /Sold from 1 subnet/ })).toBeVisible();
 
   await list.getByRole("button", { name: /Staked TAO \+ invested in 4 subnets/ }).first().click();
   await expect(page.getByText("Staked", { exact: true }).first()).toBeVisible();
@@ -28,6 +34,7 @@ test("history: one clear card per transaction, stake and invest shown separately
   await expect(page.getByText(/Chutes/).first()).toBeVisible();
 
   await page.getByRole("button", { name: "Transfers" }).click();
-  await expect(list.getByRole("button", { name: /Received TAO/ })).toBeVisible();
+  await expect(list.getByRole("button", { name: /Received TAO/ }).first()).toBeVisible();
+  await expect(list.getByRole("button", { name: /Sent TAO/ }).first()).toBeVisible();
   await expect(list.getByRole("button", { name: /Staked TAO/ })).toHaveCount(0);
 });
