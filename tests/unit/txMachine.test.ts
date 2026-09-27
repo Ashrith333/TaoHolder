@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { initialTx, txReducer, type TxEvent, type TxState } from "@/services/txMachine";
 import { resolveBucket } from "@/services/buckets";
-import { resolveValidator } from "@/services/validators";
+import { permitsFrom, resolveValidator } from "@/services/validators";
 import { validators } from "../fixtures/pools";
 
 const run = (events: TxEvent[]) => events.reduce<TxState>((s, e) => txReducer(s, e), initialTx);
@@ -40,11 +40,20 @@ describe("buckets + validators", () => {
     expect(resolveBucket("bookmarks", defs, rows, [51])).toEqual([51]);
     expect(resolveBucket("all", defs, rows, [], [8])).toEqual([64, 51]);
   });
-  it("validator default, per netuid, fallback on take", () => {
+  it("per-subnet first, then the shared chain; take and permits skip entries", () => {
     expect(resolveValidator(4, validators)?.name).toBe("B");
     expect(resolveValidator(64, validators)?.name).toBe("A");
-    const hiTake = { ...validators, perNetuid: { "4": { name: "X", hotkey: "5X", take: 0.5 } } };
-    expect(resolveValidator(4, hiTake)?.name).toBe("C");
+    const hiTake = { ...validators, perNetuid: { "4": [{ name: "X", hotkey: "5X", take: 0.5 }] } };
+    expect(resolveValidator(4, hiTake)?.name).toBe("A");
+    expect(resolveValidator(64, validators, (hk) => hk !== "5A")?.name).toBe("C");
     expect(resolveValidator(4, validators, () => false)).toBeNull();
+  });
+  it("permits from pools: unknown list allows, known list filters, root always allowed", () => {
+    const pools = new Map([[51, { permits: ["5C"] }], [64, {}]]);
+    const ok = permitsFrom(pools);
+    expect(ok("5A", 64)).toBe(true);
+    expect(ok("5A", 51)).toBe(false);
+    expect(ok("5C", 51)).toBe(true);
+    expect(ok("5A", 0)).toBe(true);
   });
 });

@@ -23,7 +23,7 @@ export function useSellModel() {
   const p = positions.data;
   const items = p
     ? [
-        ...(p.root > 0n ? [{ netuid: 0, hotkey: p.rootHotkey ?? validators.default.hotkey, held: p.root, valueTao: p.root }] : []),
+        ...(p.root > 0n ? [{ netuid: 0, hotkey: p.rootHotkey ?? (validators.all[0]?.hotkey ?? ""), held: p.root, valueTao: p.root }] : []),
         ...p.positions.map((x) => ({ netuid: x.netuid, hotkey: x.hotkey, held: x.alpha, valueTao: x.valueTao })),
       ]
     : [];

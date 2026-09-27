@@ -60,3 +60,15 @@ describe("requote", () => {
     expect(removeLeg(b, 64).legs.map((l) => l.netuid)).toEqual([0]);
   });
 });
+
+describe("validator fallback in quotes", () => {
+  it("uses the backup where the primary has no permit, and skips when nobody does", () => {
+    const pools2 = new Map([
+      [64, pool(64, 98_000, 0.1, { permits: ["5C"] })],
+      [51, pool(51, 5_000, 0.05, { permits: ["5Z"] })],
+    ]);
+    const q = buildAddQuote({ ...ctx, pools: pools2 }, 0n, [{ netuid: 64, amount: amt("5") }, { netuid: 51, amount: amt("5") }]);
+    expect(q.legs.find((l) => l.netuid === 64)?.validatorName).toBe("C");
+    expect(q.skipped).toEqual([{ netuid: 51, reason: "noValidator" }]);
+  });
+});

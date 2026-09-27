@@ -39,7 +39,7 @@ src/components/ui/  Button, Seg, Chip, Tag/ImpactTag, Checkbox, Badge, Alert, Sh
 
 Config is loaded on the server for every request (60 s cache): **each document comes from Supabase if the row exists and passes Zod; otherwise from `content/`.** If Supabase is down or not configured, the app keeps running on `content/` JSON. `GET /api/config` shows what is being served and where each document came from (`origin`).
 
-See **[docs/CONFIG.md](docs/CONFIG.md)** for how to change features and guards, add an input source, or swap a section.
+See **[docs/PRODUCTION.md](docs/PRODUCTION.md)** to launch, and **[docs/CONFIG.md](docs/CONFIG.md)** for how to change features and guards, add an input source, or swap a section.
 
 ## Deploy
 
@@ -48,7 +48,7 @@ Vercel (or any Node host): set the env vars from `.env.example`. The old one-fil
 ## Before mainnet
 
 - Verify chain calls: [docs/adr/001-chain-calls.md](docs/adr/001-chain-calls.md) (T0).
-- Replace the **placeholder validator hotkeys** in `validators` (currently well-known dev addresses).
+- Replace the **placeholder validator hotkeys** in `validators` (currently well-known dev addresses): a shared primary and backup for every subnet, plus optional per-subnet rows.
 - Replace the **sample subnet copy** and add real links and revenue.
 - Add a Taostats API key (`TAOSTATS_API_KEY`) and check the field names in `data_sources.config`.
 - Legal pages (`src/content-static/legal.ts`) after legal review (D9).

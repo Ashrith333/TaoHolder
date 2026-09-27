@@ -16,6 +16,7 @@ export type SubnetLive = {
   mcapTao: number;
   change7d: number;
   change30d: number;
+  permits?: string[]; // hotkeys holding a validator permit here, when the source provides them
 };
 
 export type SubnetCurated = {

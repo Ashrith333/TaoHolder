@@ -12,16 +12,15 @@ export type RemoteDocs = {
   sections?: unknown[];
 };
 
-type ValidatorRow = { scope: string; netuid: number | null; name: string; hotkey: string; max_take: number | null; take?: number | null; enabled: boolean };
+type ValidatorRow = { scope: string; netuid: number | null; rank: number; name: string; hotkey: string; take: number | null; enabled: boolean };
 
-function validatorsDoc(rows: ValidatorRow[]): unknown {
-  const on = rows.filter((r) => r.enabled);
-  const entry = (r: ValidatorRow) => ({ name: r.name, hotkey: r.hotkey, maxTake: r.max_take ?? undefined, take: r.take ?? undefined });
-  const def = on.find((r) => r.scope === "default");
-  const fb = on.find((r) => r.scope === "fallback");
-  if (!def || !fb) return undefined;
-  const perNetuid = Object.fromEntries(on.filter((r) => r.scope === "netuid").map((r) => [String(r.netuid), entry(r)]));
-  return { default: entry(def), fallback: entry(fb), perNetuid };
+/** Rows → { maxTake, all, perNetuid }. scope 'all' = every subnet; scope 'netuid' = that subnet first. */
+export function validatorsDoc(rows: ValidatorRow[], maxTake: unknown): unknown {
+  const on = rows.filter((r) => r.enabled).sort((a, b) => a.rank - b.rank);
+  const entry = (r: ValidatorRow) => ({ name: r.name, hotkey: r.hotkey, take: r.take == null ? undefined : Number(r.take) });
+  const perNetuid: Record<string, ReturnType<typeof entry>[]> = {};
+  for (const r of on.filter((x) => x.scope === "netuid" && x.netuid != null)) (perNetuid[String(r.netuid)] ??= []).push(entry(r));
+  return { maxTake, all: on.filter((r) => r.scope === "all").map(entry), perNetuid };
 }
 
 export async function loadRemote(locale = "en"): Promise<RemoteDocs | null> {
@@ -47,7 +46,7 @@ export async function loadRemote(locale = "en"): Promise<RemoteDocs | null> {
       product: r.product, risks: r.risks ?? [], wins: r.wins ?? [], team: r.team ?? [], links: r.links ?? {},
       curatedAt: r.curated_at,
     })),
-    validators: val.data?.length ? validatorsDoc(val.data as ValidatorRow[]) : undefined,
+    validators: val.data?.length ? validatorsDoc(val.data as ValidatorRow[], (configs["validator-policy"] as { maxTake?: number } | undefined)?.maxTake ?? 0.18) : undefined,
     copy: cp.data?.length ? Object.fromEntries(cp.data.map((r) => [r.key as string, r.text as string])) : undefined,
     sections: nonEmpty(sec.data),
   };

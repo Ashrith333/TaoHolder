@@ -27,9 +27,28 @@ function toRao(src: Source, v: number): bigint {
   return reserveIsRao(src) ? BigInt(Math.floor(v)) : taoToRao(v);
 }
 
+/** Optional: hotkeys with a validator permit per netuid (config.permitsPath). Unset → no permit check. */
+async function permits(src: Source): Promise<Map<number, string[]>> {
+  const out = new Map<number, string[]>();
+  if (typeof src.config.permitsPath !== "string") return out;
+  const json = await getJson(src, src.config.permitsPath, 300);
+  const nf = str(src.config.permitNetuidField, "netuid");
+  const hf = str(src.config.permitHotkeyField, "hotkey.ss58");
+  for (const r of rows(json)) {
+    const hk = hf.split(".").reduce<unknown>((o, k) => (o && typeof o === "object" ? (o as Record<string, unknown>)[k] : undefined), r);
+    if (typeof hk !== "string") continue;
+    const n = field(r, nf);
+    out.set(n, [...(out.get(n) ?? []), hk]);
+  }
+  return out;
+}
+
 async function pools(src: Source): Promise<SubnetLive[]> {
   const f = fieldsOf(src);
-  const json = await getJson(src, str(src.config.poolsPath, "/dtao/pool/latest/v1?limit=256"), 12);
+  const [json, permitMap] = await Promise.all([
+    getJson(src, str(src.config.poolsPath, "/dtao/pool/latest/v1?limit=256"), 12),
+    permits(src).catch(() => new Map<number, string[]>()),
+  ]);
   return rows(json)
     .map((r): SubnetLive => {
       const taoReserve = toRao(src, field(r, f.taoReserve));
@@ -46,6 +65,7 @@ async function pools(src: Source): Promise<SubnetLive[]> {
         mcapTao: reserveIsRao(src) ? mcapRaw / 1e9 : mcapRaw,
         change7d: field(r, f.change7d),
         change30d: field(r, f.change30d),
+        permits: permitMap.get(field(r, f.netuid)),
       };
     })
     .filter((p) => p.netuid > 0);

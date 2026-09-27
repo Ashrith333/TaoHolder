@@ -19,9 +19,12 @@ export function pool(netuid: number, taoReserve: number, price: number, extra: P
 }
 
 export const validators = {
-  default: { name: "A", hotkey: "5A", maxTake: 0.18, take: 0.09 },
-  perNetuid: { "4": { name: "B", hotkey: "5B", take: 0.1 } },
-  fallback: { name: "C", hotkey: "5C", take: 0.1 },
+  maxTake: 0.18,
+  all: [
+    { name: "A", hotkey: "5A", take: 0.09 },
+    { name: "C", hotkey: "5C", take: 0.1 },
+  ],
+  perNetuid: { "4": [{ name: "B", hotkey: "5B", take: 0.1 }] },
 };
 
 export const cfg = {
