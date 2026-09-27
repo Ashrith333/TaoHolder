@@ -21,6 +21,11 @@ const POOL_FIELDS = {
 
 type Fields = typeof POOL_FIELDS;
 const fieldsOf = (src: Source): Fields => ({ ...POOL_FIELDS, ...(src.config.fields as Partial<Fields> | undefined) });
+/** Cache seconds per call, overridable in config (e.g. {"cacheSec": {"pools": 3600}}). */
+const ttl = (src: Source, key: string, d: number) => {
+  const c = src.config.cacheSec as Record<string, unknown> | undefined;
+  return typeof c?.[key] === "number" ? (c[key] as number) : d;
+};
 const reserveIsRao = (src: Source) => str(src.config.reserveUnit, "rao") === "rao";
 
 function toRao(src: Source, v: number): bigint {
@@ -31,7 +36,7 @@ function toRao(src: Source, v: number): bigint {
 async function permits(src: Source): Promise<Map<number, string[]>> {
   const out = new Map<number, string[]>();
   if (typeof src.config.permitsPath !== "string") return out;
-  const json = await getJson(src, src.config.permitsPath, 300);
+  const json = await getJson(src, src.config.permitsPath, ttl(src, "permits", 3600));
   const nf = str(src.config.permitNetuidField, "netuid");
   const hf = str(src.config.permitHotkeyField, "hotkey.ss58");
   for (const r of rows(json)) {
@@ -46,7 +51,7 @@ async function permits(src: Source): Promise<Map<number, string[]>> {
 async function pools(src: Source): Promise<SubnetLive[]> {
   const f = fieldsOf(src);
   const [json, permitMap] = await Promise.all([
-    getJson(src, str(src.config.poolsPath, "/dtao/pool/latest/v1?limit=256"), 12),
+    getJson(src, str(src.config.poolsPath, "/dtao/pool/latest/v1?limit=256"), ttl(src, "pools", 60)),
     permits(src).catch(() => new Map<number, string[]>()),
   ]);
   return rows(json)
@@ -72,15 +77,15 @@ async function pools(src: Source): Promise<SubnetLive[]> {
 }
 
 async function series(src: Source, netuid: number) {
-  const json = await getJson(src, fillPath(str(src.config.historyPath, "/dtao/pool/history/v1?netuid={netuid}&frequency=by_day&limit=30"), { netuid }), 600);
+  const json = await getJson(src, fillPath(str(src.config.historyPath, "/dtao/pool/history/v1?netuid={netuid}&frequency=by_day&limit=30"), { netuid }), ttl(src, "series", 3600));
   return rows(json)
     .map((r) => ({ t: String((r as Record<string, unknown>).timestamp ?? ""), price: field(r, "price") }))
     .reverse();
 }
 
 async function positions(src: Source, coldkey: string) {
-  const stake = await getJson(src, fillPath(str(src.config.stakePath, "/dtao/stake_balance/latest/v1?coldkey={coldkey}&limit=200"), { coldkey }), 10);
-  const acct = await getJson(src, fillPath(str(src.config.accountPath, "/account/latest/v1?address={coldkey}"), { coldkey }), 10);
+  const stake = await getJson(src, fillPath(str(src.config.stakePath, "/dtao/stake_balance/latest/v1?coldkey={coldkey}&limit=200"), { coldkey }), ttl(src, "positions", 30));
+  const acct = await getJson(src, fillPath(str(src.config.accountPath, "/account/latest/v1?address={coldkey}"), { coldkey }), ttl(src, "positions", 30));
   const a = rows(acct)[0];
   const list = rows(stake).map((r) => {
     const hk = (r as { hotkey?: { ss58?: string } | string }).hotkey;
@@ -104,7 +109,7 @@ async function positions(src: Source, coldkey: string) {
 }
 
 async function history(src: Source, coldkey: string, page: number, limit: number) {
-  const json = await getJson(src, fillPath(str(src.config.path, "/delegation/v1?nominator={coldkey}&page={page}&limit={limit}"), { coldkey, page: page + 1, limit }), 30);
+  const json = await getJson(src, fillPath(str(src.config.path, "/delegation/v1?nominator={coldkey}&page={page}&limit={limit}"), { coldkey, page: page + 1, limit }), ttl(src, "history", 300));
   const items: HistoryItem[] = rows(json).map((r, i) => {
     const o = r as Record<string, unknown>;
     const isAdd = String(o.action ?? "").toUpperCase().includes("DELEGATE") && !String(o.action).toUpperCase().includes("UN");
@@ -133,7 +138,7 @@ export const taostats: ProviderFactory = {
   history: (src) => ({ history: (c, p, l) => history(src, c, p, l) }),
   price: (src) => ({
     usd: async () => {
-      const json = await getJson(src, str(src.config.pricePath, "/price/latest/v1?asset=tao"), 60);
+      const json = await getJson(src, str(src.config.pricePath, "/price/latest/v1?asset=tao"), ttl(src, "price", 300));
       return field(rows(json)[0], "price") || null;
     },
   }),

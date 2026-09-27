@@ -6,7 +6,7 @@
 |---|---|---|
 | Vercel | Hosts the Next.js app | vercel.com, sign in with GitHub |
 | Supabase | Live config and content (already created: project `taoholder`, ref `qewsbecatbyguphoekab`) | supabase.com/dashboard |
-| Taostats API | Mainnet prices, pools, positions and history | dash.taostats.io → API keys |
+| Taostats API | Backup source, plus 7d/30d change, price charts and history (live data comes free from the chain) | dash.taostats.io → API keys |
 | Domain registrar | Point `taoholder.com` at Vercel | wherever the domain was bought |
 | RPC (optional) | More reliable wallet submits than the public endpoint | OnFinality, Dwellir, or your own Subtensor node |
 

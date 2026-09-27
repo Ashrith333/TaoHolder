@@ -29,13 +29,14 @@ export function PreviewDesk() {
   }
   const s = f.tx.s;
   const busy = s === "quoting";
-  const editable = s === "previewReady" || s === "requoteReady" || s === "rejectedByUser" || s === "dropped";
+  const failed = f.tx.s === "failedOnChain" && !f.tx.priceLimit;
+  const editable = s === "previewReady" || s === "requoteReady" || s === "rejectedByUser" || s === "dropped" || failed;
   const changed = f.diff?.filter((d) => d.status === "changed") ?? [];
   const skippedNote = q.skipped.length
     ? t("trade.skipped", { n: q.legs.length + q.skipped.length, m: q.skipped.length, reason: q.skipped.map((x) => `${t(`skip.${x.reason}`).toLowerCase()}: SN${x.netuid}`).join(", ") })
     : null;
   const total = q.legs.reduce((a, l) => a + (q.side === "sell" ? l.estValueTao : l.amountIn), 0n);
-  const confirmLabel = s === "requoteReady" ? t("requote.cta") : s === "rejectedByUser" ? t("tx.confirmAgain") : s === "dropped" ? t("tx.retry") : t("preview.confirm");
+  const confirmLabel = s === "requoteReady" ? t("requote.cta") : s === "rejectedByUser" ? t("tx.confirmAgain") : s === "dropped" || failed ? t("tx.retry") : t("preview.confirm");
   return (
     <div className="mx-auto max-w-[880px] space-y-4 pb-24">
       <div className="flex items-center justify-between gap-3">

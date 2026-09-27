@@ -62,6 +62,7 @@ export function txReducer(state: TxState, e: TxEvent, attempts = 0): TxState {
       return state;
     case "failedOnChain":
       if (e.t === "QUOTE") return { s: "quoting" };
+      if (e.t === "CONFIRM" && !state.priceLimit) return { s: "awaitingSignature" };
       return state;
     case "dropped":
       if (e.t === "CONFIRM") return { s: "awaitingSignature" };

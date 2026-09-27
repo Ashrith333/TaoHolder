@@ -4,11 +4,12 @@ import type { Source } from "@/adapters/content/schemas";
 import { coingecko } from "./coingecko";
 import { fixtures } from "./fixtures";
 import { taostats } from "./taostats";
+import { subtensor } from "./subtensor";
 import type { DataKind, ProviderFactory, ProviderKinds } from "./types";
 
 // Provider registry. To add a source: write a ProviderFactory, add it here, then add a
 // data_sources row (Supabase) or a sources.json entry that names it.
-const PROVIDERS: Record<string, ProviderFactory> = { fixtures, taostats, coingecko };
+const PROVIDERS: Record<string, ProviderFactory> = { fixtures, taostats, coingecko, subtensor };
 
 export type SourceResult<T> = { value: T; source: string; stale?: boolean };
 
@@ -36,6 +37,14 @@ export async function withSource<K extends DataKind, T>(
     }
   }
   throw new Error(`No working source for "${kind}" on ${cfg.network}. ${errors.join(" | ")}`);
+}
+
+/** Run one named source directly (used for enrichment such as 7d change). */
+export async function fromSource<K extends DataKind, T>(id: string, kind: K, run: (p: ProviderKinds[K]) => Promise<T>): Promise<T | null> {
+  const src = (await loadConfig()).sources.find((s) => s.id === id);
+  const factory = src ? PROVIDERS[src.provider]?.[kind] : undefined;
+  if (!src || !factory) return null;
+  return run(factory(src) as ProviderKinds[K]).catch(() => null);
 }
 
 export const providerNames = () => Object.keys(PROVIDERS);
