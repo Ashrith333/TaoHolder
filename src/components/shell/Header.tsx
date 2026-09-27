@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, WalletButton } from "@/features/wallet";
 import { useConfig, useT } from "@/providers/ConfigProvider";
+import { Logo } from "@/components/brand/Logo";
 
 /** Top bar: mark, text tabs on laptop, Connect / address pill, menu. */
 export function Header() {
@@ -12,8 +13,8 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-bg/90 backdrop-blur">
       <div className="mx-auto flex h-14 max-w-[var(--max-w)] items-center gap-6 px-4 md:h-16 md:px-10 xl:px-[120px]">
-        <Link href="/account" className="flex items-baseline gap-0.5 text-[17px] font-extrabold">
-          <span>tao</span><span className="text-muted">holder</span>
+        <Link href="/account" aria-label="taoholder home" className="flex items-center">
+          <Logo size={22} />
         </Link>
         {network !== "mainnet" ? <span className="rounded-[6px] bg-s3 px-1.5 py-0.5 text-[10px] font-bold uppercase text-muted">{network}</span> : null}
         <nav className="hidden flex-1 gap-6 md:flex">

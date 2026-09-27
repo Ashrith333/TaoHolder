@@ -1,6 +1,7 @@
 "use client";
 import { ConnectCta } from "@/features/wallet";
 import { useT } from "@/providers/ConfigProvider";
+import { Logo } from "@/components/brand/Logo";
 
 /** S01: explain the desk in one screen and get the wallet connected. */
 export function AccountHero() {
@@ -8,7 +9,9 @@ export function AccountHero() {
   const cards = ["stake", "invest", "sell"] as const;
   return (
     <section className="fade-in mx-auto max-w-[560px] pt-6 text-center md:pt-16">
-      <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-[16px] bg-primary text-[28px] font-extrabold text-on-primary">τ</div>
+      <div className="mb-6 flex justify-center">
+        <Logo className="text-[48px] md:text-[72px]" />
+      </div>
       <h1 className="text-[26px] font-extrabold md:text-[34px]">{t("hero.title")}</h1>
       <p className="mx-auto mt-3 max-w-[40ch] text-[15px] text-muted">{t("hero.promise")}</p>
       <div className="mx-auto mt-6 max-w-[360px]">
