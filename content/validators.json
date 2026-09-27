@@ -1,8 +1,16 @@
 {
   "maxTake": 0.18,
   "all": [
-    { "name": "REPLACE: primary validator (on every subnet)", "hotkey": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", "take": 0.09 },
-    { "name": "REPLACE: backup validator", "hotkey": "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty", "take": 0.1 }
+    {
+      "name": "tao.bot",
+      "hotkey": "5E2LP6EnZ54m3wS8s1yPvD5c3xo71kQroBw7aUVK32TKeZ5u",
+      "take": 0.09
+    },
+    {
+      "name": "Yuma",
+      "hotkey": "5DXdHixxtCvoa6GHKs2Jgrdzc61882Ftx1zN2sYFQuwgL1S1",
+      "take": 0.1
+    }
   ],
   "perNetuid": {}
 }

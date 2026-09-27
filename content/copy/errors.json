@@ -10,5 +10,6 @@
   "default": "The network rejected this transaction.",
   "NoSigner": "Your wallet isn't connected in this tab. Reconnect it and try again.",
   "RpcUnavailable": "Can't reach the Bittensor network right now. Nothing was sent.",
-  "BuildFailed": "This transaction doesn't match the network's current format. Nothing was sent."
+  "BuildFailed": "This transaction doesn't match the network's current format. Nothing was sent.",
+  "ValidatorMissing": "A validator in this order isn't registered on the network, so nothing was sent. Check the validators table."
 }
