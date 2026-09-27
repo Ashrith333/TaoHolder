@@ -1,6 +1,6 @@
 import type { Source } from "@/adapters/content/schemas";
 import type { RawPositions } from "@/services/positions";
-import type { HistoryItem, SubnetLive } from "@/services/types";
+import type { HistoryTx, SubnetLive } from "@/services/types";
 import type { SeriesPoint } from "./dto";
 
 // Every input source implements one of these. Add a provider by writing a factory and
@@ -13,7 +13,7 @@ export interface PositionsProvider {
   positions(coldkey: string): Promise<RawPositions>;
 }
 export interface HistoryProvider {
-  history(coldkey: string, page: number, limit: number): Promise<{ items: HistoryItem[]; hasMore: boolean }>;
+  history(coldkey: string, page: number, limit: number): Promise<{ items: HistoryTx[]; hasMore: boolean }>;
 }
 export interface PriceProvider {
   usd(): Promise<number | null>;

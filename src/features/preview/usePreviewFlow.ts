@@ -9,12 +9,12 @@ import { track } from "@/adapters/analytics";
 import { fetchPools } from "@/hooks/data";
 import { useConfig } from "@/providers/ConfigProvider";
 import { useTrade } from "@/stores/trade";
-import { useTxLog } from "@/stores/txLog";
+import { useTxLog, type LogEntry } from "@/stores/txLog";
+import { logEntryFor } from "./txLogEntry";
 import { useWallet } from "@/stores/wallet";
 import { buildBatch } from "@/services/buildBatch";
 import { diffQuotes } from "@/services/quoteDiff";
 import { removeLeg, requote } from "@/services/quoteBuilder";
-import { raoToTao } from "@/services/rao";
 import { newQuoteId, shockPool } from "@/services/tradeQuote";
 import { initialTx, txReducer, type TxEvent, type TxState } from "@/services/txMachine";
 import type { Quote } from "@/services/types";
@@ -30,7 +30,10 @@ export function usePreviewFlow() {
   const [tx, dispatchRaw] = useReducer((s: TxState, e: TxEvent) => txReducer(s, e), quote ? { s: "previewReady" } : initialTx);
   const [flash, setFlash] = useState<Set<number>>(new Set());
   const cancel = useRef<(() => void) | null>(null);
-  const logId = useRef<string | null>(null);
+  // History entry for this attempt: written only once the chain has it (SUBMITTED), so
+  // wallet rejections and failures before sending never clutter History.
+  const pendingLog = useRef<LogEntry | null>(null);
+  const logged = useRef(false);
 
   const env = useCallback((pools: Awaited<ReturnType<typeof fetchPools>>) => ({ pools, validators: cfg.validators, cfg: cfg.guards, now: Date.now(), id: newQuoteId() }), [cfg]);
 
@@ -43,9 +46,15 @@ export function usePreviewFlow() {
 
   const dispatch = useCallback((e: TxEvent) => {
     dispatchRaw(e);
-    const id = logId.current;
-    if (!id) return;
-    if (e.t === "SUBMITTED") log.update(id, { hash: e.hash });
+    const entry = pendingLog.current;
+    if (!entry) return;
+    const id = entry.id;
+    if (e.t === "SUBMITTED" && !logged.current) {
+      logged.current = true;
+      log.add({ ...entry, hash: e.hash, time: new Date().toISOString() });
+    }
+    if (!logged.current) return;
+    if (e.t === "IN_BLOCK") log.update(id, { block: e.block });
     if (e.t === "FINALIZED") {
       log.update(id, { status: "done" });
       track("tx_finalized", { legCount: quote?.legs.length ?? 0 });
@@ -53,11 +62,11 @@ export function usePreviewFlow() {
       qc.invalidateQueries({ queryKey: ["history"] });
     }
     if (e.t === "FAIL") {
-      log.update(id, { status: e.priceLimit ? "cancelled" : "failed" });
+      log.update(id, { status: "failed", reason: cfg.errors[e.reason] ?? e.reason });
       track("tx_failed", { reason: e.reason });
     }
-    if (e.t === "REJECT" || e.t === "DROP") log.update(id, { status: e.t === "REJECT" ? "cancelled" : "pending" });
-  }, [log, qc, quote]);
+    if (e.t === "DROP") log.update(id, { status: "pending" });
+  }, [log, qc, quote, cfg.errors]);
 
   // Price-limit failure → keep old quote, fetch new, diff (S14).
   useEffect(() => {
@@ -89,16 +98,8 @@ export function usePreviewFlow() {
     cancel.current?.();
     dispatchRaw({ t: "CONFIRM" });
     if (demo && !outcome) return; // demo: wait for a Demo button (approve / reject / prices moved / no block)
-    const id = `tx_${Date.now()}`;
-    logId.current = id;
-    const invest = quote.legs.filter((l) => l.kind === "invest").length;
-    log.add({
-      id, owner: address, action: quote.side === "sell" ? "sell" : invest ? "invest" : "stake",
-      label: quote.side === "sell" ? `Sell · ${quote.legs.length} legs` : invest ? `Invest · ${quote.legs.length} legs` : "Stake TAO",
-      legs: quote.legs.length, time: new Date().toISOString(), status: "pending",
-      taoIn: quote.side === "add" ? raoToTao(quote.legs.reduce((s, l) => s + l.amountIn, 0n)) : 0,
-      taoOut: quote.side === "sell" ? raoToTao(quote.legs.reduce((s, l) => s + l.estValueTao, 0n)) : 0,
-    });
+    pendingLog.current = logEntryFor(quote, address, `tx_${Date.now()}`);
+    logged.current = false;
     track("tx_submitted", { mode: quote.side, legCount: quote.legs.length });
     if (demo) {
       const failAt = quote.legs.find((l) => l.kind === "invest" || l.kind === "sell")?.netuid;
@@ -112,7 +113,7 @@ export function usePreviewFlow() {
       batch: buildBatch(quote.legs), address, signer, rpcWs: cfg.rpcWs ?? "", dropAfterSec: cfg.guards.dropAfterSec,
       onEvent: dispatch, decodeError: (n) => cfg.errors[n] ?? cfg.errors.default ?? n,
     });
-  }, [quote, address, demo, walletId, dispatch, cfg, log]);
+  }, [quote, address, demo, walletId, dispatch, cfg]);
 
   useEffect(() => () => cancel.current?.(), []);
   useEffect(() => {

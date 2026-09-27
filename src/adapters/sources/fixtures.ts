@@ -2,7 +2,7 @@ import poolsJson from "@content/fixtures/pools.json";
 import positionsJson from "@content/fixtures/positions.json";
 import historyJson from "@content/fixtures/history.json";
 import { taoToRao } from "@/services/rao";
-import type { SubnetLive } from "@/services/types";
+import type { HistoryTx, SubnetLive } from "@/services/types";
 import type { ProviderFactory } from "./types";
 
 // SAMPLE DATA provider for local/demo mode. Demo coldkeys tweak the shape:
@@ -46,7 +46,7 @@ export const fixtures: ProviderFactory = {
   }),
   history: () => ({
     history: async (coldkey, page, limit) => {
-      const items = coldkey.startsWith("demo-empty") ? [] : (historyJson.items as never[]);
+      const items = coldkey.startsWith("demo-empty") ? [] : (historyJson.items as HistoryTx[]);
       return { items: items.slice(page * limit, (page + 1) * limit), hasMore: (page + 1) * limit < items.length };
     },
   }),
