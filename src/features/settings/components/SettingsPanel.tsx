@@ -24,7 +24,7 @@ export function SettingsPanel() {
   );
   return (
     <section className="mx-auto max-w-[640px] space-y-4">
-      <h1 className="text-[22px] font-extrabold">{t("settings.title")}</h1>
+      <h1 className="pr-12 text-[22px] font-extrabold">{t("settings.title")}</h1>
       <div className="card px-4">
         {cfg.features.usdToggle
           ? row(t("settings.showFirst"), (

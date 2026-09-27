@@ -36,7 +36,7 @@ export function HistoryList() {
 
   return (
     <section className="mx-auto max-w-[760px] space-y-4">
-      <h1 className="text-[22px] font-extrabold">{t("history.title")}</h1>
+      <h1 className="pr-12 text-[22px] font-extrabold">{t("history.title")}</h1>
       <ChipRow>{FILTERS.map((f) => <Chip key={f} on={filter === f} onClick={() => setFilter(f)}>{t(`history.filter.${f}`)}</Chip>)}</ChipRow>
       {localOnly ? <Alert>{t("history.localOnly")}</Alert> : null}
       {q.isLoading ? (
