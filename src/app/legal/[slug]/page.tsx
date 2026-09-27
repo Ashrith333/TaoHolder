@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { LEGAL } from "@/content-static/legal";
+import { Logo } from "@/components/brand/Logo";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -14,7 +15,7 @@ export default async function LegalPage({ params }: Props) {
   if (!doc) notFound();
   return (
     <main className="mx-auto max-w-[680px] px-4 py-10">
-      <Link href="/account" className="text-[13px] text-muted underline">taoholder</Link>
+      <Link href="/account" aria-label="taoholder home"><Logo size={22} /></Link>
       <h1 className="mt-4 text-[26px] font-extrabold">{doc.title}</h1>
       {doc.body.map((p) => <p key={p} className="mt-4 text-[14px] leading-relaxed text-muted">{p}</p>)}
     </main>

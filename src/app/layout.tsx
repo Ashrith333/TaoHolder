@@ -7,6 +7,9 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "sw
 export const metadata: Metadata = {
   title: { default: "taoholder", template: "%s · taoholder" },
   description: "See what you hold. Stake or invest in subnets. Sell back. One confirm.",
+  metadataBase: new URL("https://taoholder.com"),
+  openGraph: { siteName: "taoholder", type: "website" },
+  twitter: { card: "summary_large_image", site: "@Tao_Holder" },
 };
 export const viewport: Viewport = { themeColor: "#0a0a0a", width: "device-width", initialScale: 1 };
 

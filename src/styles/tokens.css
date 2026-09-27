@@ -14,6 +14,8 @@
   --red: #ff4d4f;
   --red-soft: #2a1415;
   --card-border: transparent;
+  /* wordmark: "tao" in text colour, "holder" in grey */
+  --logo-holder: #7b8089;
   /* allocation greys, darkest = root */
   --g1: #ffffff;
   --g2: #c7c7c7;
@@ -38,6 +40,7 @@
   --red: #d92d20;
   --red-soft: #fef1f0;
   --card-border: #e2e2e2;
+  --logo-holder: #8a8f98;
   --g1: #0a0a0a;
   --g2: #3d3d3d;
   --g3: #666666;
