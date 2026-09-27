@@ -6,6 +6,7 @@ import type { SubmitArgs } from "./types";
 type AnyApi = {
   tx: Record<string, Record<string, ((...a: unknown[]) => unknown) & { meta: { args: unknown[] } }>>;
   registry: { findMetaError: (m: unknown) => { name: string } };
+  query: { subtensorModule?: { owner?: (hk: string) => Promise<{ toU8a: () => Uint8Array }> } };
   disconnect: () => Promise<void>;
 };
 
@@ -29,6 +30,15 @@ async function getApi(rpcWs: string): Promise<AnyApi> {
     apiPromise.catch(() => (apiPromise = null)); // retry on the next attempt
   }
   return apiPromise;
+}
+
+/** Hotkeys in the batch that have no owner on chain (not a registered validator). */
+async function missingHotkeys(api: AnyApi, batch: Batch): Promise<string[]> {
+  const owner = api.query.subtensorModule?.owner;
+  if (!owner) return []; // can't check on this runtime; let the chain decide
+  const hotkeys = [...new Set(batch.calls.map((c) => String(c.args[0])))];
+  const results = await Promise.all(hotkeys.map(async (hk) => [hk, (await owner(hk)).toU8a().every((b) => b === 0)] as const));
+  return results.filter(([, missing]) => missing).map(([hk]) => hk);
 }
 
 /** Start connecting early (e.g. when Review opens) so Confirm doesn't wait for it. */
@@ -79,6 +89,8 @@ export async function submitBatch(a: SubmitArgs): Promise<() => void> {
     if (!a.signer) throw new SubmitError("NoSigner", "Wallet is not connected in this tab");
     const api = await getApi(a.rpcWs);
     const tx = toExtrinsic(api, a.batch);
+    const missing = await missingHotkeys(api, a.batch);
+    if (missing.length) throw new SubmitError("ValidatorMissing", `hotkey ${missing.join(", ")} is not registered on this network`);
     drop = setTimeout(() => !settled && a.onEvent({ t: "DROP" }), a.dropAfterSec * 1000);
     unsub = await tx.signAndSend(a.address, { signer: a.signer }, (raw) => {
       const r = raw as Result;
