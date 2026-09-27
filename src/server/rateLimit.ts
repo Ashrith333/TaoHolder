@@ -2,7 +2,7 @@ import "server-only";
 
 // Per-IP token bucket (PRD 16.5). In-memory per instance; good enough for v1.
 const buckets = new Map<string, { tokens: number; at: number }>();
-const RATE = 60; // requests
+const RATE = Number(process.env.RATE_LIMIT_PER_MIN) || 120; // requests per IP per minute
 const WINDOW_MS = 60_000;
 
 export function allow(req: Request): boolean {

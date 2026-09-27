@@ -12,7 +12,7 @@ export function demoSubmit(outcome: DemoOutcome, failNetuid: number | undefined,
     if (outcome === "noBlock") at(1800, { t: "DROP" });
     else if (outcome === "priceMoved") at(1600, { t: "FAIL", reason: "SlippageTooHigh", priceLimit: true, netuid: failNetuid });
     else {
-      at(1600, { t: "IN_BLOCK", block: 4_812_337 });
+      at(1600, { t: "IN_BLOCK", block: 5_000_000 + Math.floor(Math.random() * 1_000_000) });
       at(3000, { t: "FINALIZED" });
     }
   }

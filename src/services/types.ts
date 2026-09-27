@@ -88,14 +88,25 @@ export type Quote = {
   expiresAt: number;
 };
 
-export type HistoryItem = {
+/** One on-chain transaction, as the user sees it in History. Amounts are TAO / tokens (display only). */
+export type HistoryLegType = "stake" | "invest" | "sell" | "unstake";
+export type HistoryLeg = {
+  type: HistoryLegType;
+  netuid: number | null; // null = the source didn't say
+  tao: number; // TAO put in (stake/invest) or received (sell/unstake)
+  tokens?: number; // subnet tokens received (invest) or sold (sell)
+  hotkey?: string;
+  estimate?: boolean; // from our quote, not yet confirmed by the indexer
+};
+export type HistoryStatus = "done" | "failed" | "pending";
+export type HistoryTx = {
   id: string;
-  action: "invest" | "sell" | "stake";
-  label: string;
-  legs: number;
+  kind: "trade" | "transfer";
   time: string;
-  taoIn: number;
-  taoOut: number;
-  status: "done" | "cancelled" | "failed" | "pending";
-  hash?: string;
+  status: HistoryStatus;
+  reason?: string; // why it failed, in plain words
+  block?: number;
+  hash?: string; // extrinsic hash (0x…) or indexer id (block-index)
+  legs: HistoryLeg[];
+  transfer?: { direction: "in" | "out"; tao: number; counterparty: string };
 };

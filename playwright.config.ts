@@ -12,5 +12,5 @@ export default defineConfig({
     { name: "phone", use: { ...devices["Pixel 7"], browserName: "chromium" } },
     { name: "laptop", use: { viewport: { width: 1440, height: 900 } } },
   ],
-  webServer: { command: `pnpm start -p ${port}`, port, reuseExistingServer: true, env: { NEXT_PUBLIC_CHAIN: "local" } },
+  webServer: { command: `pnpm start -p ${port}`, port, reuseExistingServer: true, env: { NEXT_PUBLIC_CHAIN: "local", RATE_LIMIT_PER_MIN: "100000" } },
 });

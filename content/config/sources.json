@@ -154,7 +154,8 @@
         "path": "/delegation/v1?nominator={coldkey}&page={page}&limit={limit}",
         "cacheSec": {
           "history": 300
-        }
+        },
+        "transfersPath": "/transfer/v1?address={coldkey}&page={page}&limit={limit}"
       }
     },
     {

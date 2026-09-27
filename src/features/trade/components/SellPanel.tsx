@@ -1,5 +1,5 @@
 "use client";
-import { Badge, Button, Checkbox, Seg } from "@/components/ui";
+import { Alert, Badge, Button, Checkbox, Seg } from "@/components/ui";
 import { useMoney } from "@/hooks/money";
 import { useT } from "@/providers/ConfigProvider";
 import { formatTaoNumber } from "@/services/format";
@@ -64,6 +64,7 @@ export function SellPanel() {
         <p className="num mb-3 text-[14px] font-bold">
           {t("sell.summary", { x: money.pairRao(total).primary, n: m.chosen.length, y: money.pairRao(out).primary })}
         </p>
+        {go.error ? <div className="mb-3"><Alert kind="red">{go.error}</Alert></div> : null}
         <Button full disabled={!m.chosen.length} loading={go.busy} onClick={() => go.sell(m)}>{t("sell.cta")}</Button>
       </div>
     </div>
