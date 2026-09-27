@@ -4,7 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { demoSubmit } from "@/adapters/chain/demo";
 import { submitBatch } from "@/adapters/chain/submit";
 import type { DemoOutcome } from "@/adapters/chain/types";
-import { getSigner } from "@/adapters/wallet";
+import { getSigner, restoreWallet } from "@/adapters/wallet";
 import { track } from "@/adapters/analytics";
 import { fetchPools } from "@/hooks/data";
 import { useConfig } from "@/providers/ConfigProvider";
@@ -24,7 +24,7 @@ export function usePreviewFlow() {
   const cfg = useConfig();
   const qc = useQueryClient();
   const { quote, prevQuote, set } = useTrade();
-  const { address, demo } = useWallet();
+  const { address, demo, walletId } = useWallet();
   const log = useTxLog();
   const [attempts, setAttempts] = useState(0);
   const [tx, dispatchRaw] = useReducer((s: TxState, e: TxEvent) => txReducer(s, e), quote ? { s: "previewReady" } : initialTx);
@@ -105,11 +105,14 @@ export function usePreviewFlow() {
       cancel.current = demoSubmit(outcome ?? "approve", failAt, dispatch);
       return;
     }
+    // After a page reload the signer is gone from memory: re-enable the saved wallet first.
+    let signer = getSigner();
+    if (!signer && walletId) signer = (await restoreWallet(cfg.wallets, walletId, cfg.app.name).catch(() => null))?.signer ?? null;
     cancel.current = await submitBatch({
-      batch: buildBatch(quote.legs), address, signer: getSigner(), rpcWs: cfg.rpcWs ?? "", dropAfterSec: cfg.guards.dropAfterSec,
+      batch: buildBatch(quote.legs), address, signer, rpcWs: cfg.rpcWs ?? "", dropAfterSec: cfg.guards.dropAfterSec,
       onEvent: dispatch, decodeError: (n) => cfg.errors[n] ?? cfg.errors.default ?? n,
     });
-  }, [quote, address, demo, dispatch, cfg, log]);
+  }, [quote, address, demo, walletId, dispatch, cfg, log]);
 
   useEffect(() => () => cancel.current?.(), []);
 

@@ -11,6 +11,20 @@ export function walletAdapters(cfg: WalletsConfig): { meta: WalletsConfig["walle
   return [...list.filter((w) => w.adapter.detected()), ...list.filter((w) => !w.adapter.detected())];
 }
 
+/**
+ * Re-enable the saved wallet (PRD 9.1: auto-reconnect on return). If the site is still
+ * authorised the extension answers silently; otherwise it opens its approval pop-up.
+ */
+export async function restoreWallet(cfg: WalletsConfig, walletId: string, appName: string) {
+  const w = cfg.wallets.find((m) => m.id === walletId);
+  if (!w) return null;
+  const adapter = extensionWallet(w.id, w.injectedKey);
+  if (!adapter.detected()) return null;
+  const res = await adapter.enable(appName);
+  activeSigner = res.signer;
+  return res;
+}
+
 // The signer lives only in memory for this tab.
 let activeSigner: unknown = null;
 export const setSigner = (s: unknown) => (activeSigner = s);

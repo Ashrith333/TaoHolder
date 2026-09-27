@@ -57,3 +57,12 @@ describe("buckets + validators", () => {
     expect(ok("5A", 0)).toBe(true);
   });
 });
+
+describe("retry after a non-price-limit failure", () => {
+  it("allows Confirm again, but not after a price-limit failure", () => {
+    const failed = run([{ t: "QUOTE" }, { t: "QUOTED" }, { t: "CONFIRM" }, { t: "FAIL", reason: "x", priceLimit: false }]);
+    expect(txReducer(failed, { t: "CONFIRM" }).s).toBe("awaitingSignature");
+    const limit = run([{ t: "QUOTE" }, { t: "QUOTED" }, { t: "CONFIRM" }, { t: "FAIL", reason: "x", priceLimit: true }]);
+    expect(txReducer(limit, { t: "CONFIRM" }).s).toBe("failedOnChain");
+  });
+});

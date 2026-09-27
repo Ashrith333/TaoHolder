@@ -7,5 +7,8 @@
   "HotKeyAccountNotExists": "The validator is not registered.",
   "StakingRateLimitExceeded": "Too many stake changes in a short time. Try again in a minute.",
   "InsufficientLiquidity": "The pool is too small for this amount.",
-  "default": "The network rejected this transaction."
+  "default": "The network rejected this transaction.",
+  "NoSigner": "Your wallet isn't connected in this tab. Reconnect it and try again.",
+  "RpcUnavailable": "Can't reach the Bittensor network right now. Nothing was sent.",
+  "BuildFailed": "This transaction doesn't match the network's current format. Nothing was sent."
 }
