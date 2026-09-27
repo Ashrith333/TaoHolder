@@ -34,8 +34,8 @@ Each `data_sources` row says **which provider** feeds **which kind** of data on 
 
 | kind | used for | providers today |
 |---|---|---|
-| `subnets`, `pools` | prices, reserves, emission, 30d series | `fixtures`, `taostats` |
-| `positions` | free, root, subnet stake for a coldkey | `fixtures`, `taostats` |
+| `subnets`, `pools` | prices, reserves, emission, 30d series | `subtensor` (free, straight from chain), `fixtures`, `taostats` |
+| `positions` | free, root, subnet stake for a coldkey | `subtensor`, `fixtures`, `taostats` |
 | `history` | past extrinsics | `fixtures`, `taostats` |
 | `price` | TAO in USD | `fixtures`, `coingecko`, `taostats` |
 | `rpc_ws` | wallet submit (browser) | any Subtensor WS URL |
@@ -44,6 +44,8 @@ Each `data_sources` row says **which provider** feeds **which kind** of data on 
 - Rows are tried in `priority` order (low first). **If one fails, the next is used.** For example, add a `fixtures` row with priority 90 as a safety net.
 - `url` is the base URL. Paths and **field names** live in `config`, so a changed API is fixed with an update, not a deploy:
   `{"apiKeyEnv": "TAOSTATS_API_KEY", "poolsPath": "/dtao/pool/latest/v1?limit=256", "fields": {"price": "price", "taoReserve": "total_tao"}, "reserveUnit": "rao"}`
+- **Cost:** `subtensor` reads the chain over a public RPC and costs no API credits. It is priority 5, with Taostats (priority 10) as the backup. The chain has no price history, so `chain-subnets` has `"changesFrom": "taostats-subnets"`, which copies the 7d/30d change from Taostats. That source is cached for an hour (`"cacheSec": {"pools": 3600}`).
+- `cacheSec` (Taostats) sets the cache per call type: `pools`, `series`, `positions`, `history`, `price`, `permits`. Higher values mean fewer credits.
 - Secrets never go in the DB. `apiKeyEnv` names the env var that holds the key (`apiKeyHeader` defaults to `Authorization`).
 - **New provider:** write a `ProviderFactory` in `src/adapters/sources/<name>.ts` (see `coingecko.ts`, about 15 lines), add it to `PROVIDERS` in `registry.ts`, then add a row with `provider = '<name>'`.
 
