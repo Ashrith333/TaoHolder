@@ -9,7 +9,7 @@ type AnyApi = {
   disconnect: () => Promise<void>;
 };
 
-const CONNECT_TIMEOUT_MS = 20_000;
+const CONNECT_TIMEOUT_MS = 30_000;
 let apiPromise: Promise<AnyApi> | null = null;
 async function getApi(rpcWs: string): Promise<AnyApi> {
   if (!rpcWs) throw new SubmitError("RpcUnavailable", "No RPC endpoint configured (data_sources kind rpc_ws)");
@@ -29,6 +29,11 @@ async function getApi(rpcWs: string): Promise<AnyApi> {
     apiPromise.catch(() => (apiPromise = null)); // retry on the next attempt
   }
   return apiPromise;
+}
+
+/** Start connecting early (e.g. when Review opens) so Confirm doesn't wait for it. */
+export function warmUp(rpcWs: string | null) {
+  if (rpcWs) getApi(rpcWs).catch(() => undefined);
 }
 
 /** Failures before anything reaches the chain. `code` maps to content/copy/errors.json. */

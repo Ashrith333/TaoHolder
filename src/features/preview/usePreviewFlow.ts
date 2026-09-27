@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { demoSubmit } from "@/adapters/chain/demo";
-import { submitBatch } from "@/adapters/chain/submit";
+import { submitBatch, warmUp } from "@/adapters/chain/submit";
 import type { DemoOutcome } from "@/adapters/chain/types";
 import { getSigner, restoreWallet } from "@/adapters/wallet";
 import { track } from "@/adapters/analytics";
@@ -115,6 +115,9 @@ export function usePreviewFlow() {
   }, [quote, address, demo, walletId, dispatch, cfg, log]);
 
   useEffect(() => () => cancel.current?.(), []);
+  useEffect(() => {
+    if (!demo && quote) warmUp(cfg.rpcWs);
+  }, [demo, quote, cfg.rpcWs]);
 
   const remove = (netuid: number) => quote && set({ quote: removeLeg(quote, netuid) });
   const diff = prevQuote && quote && tx.s === "requoteReady" ? diffQuotes(prevQuote, quote, cfg.guards) : null;
