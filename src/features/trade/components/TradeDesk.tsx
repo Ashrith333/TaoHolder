@@ -1,5 +1,6 @@
 "use client";
 import { useEffect } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Seg } from "@/components/ui";
 import { useT } from "@/providers/ConfigProvider";
@@ -31,8 +32,17 @@ export function TradeDesk() {
   }, [params, set]);
   return (
     <div>
-      <div className="mb-4 max-w-[420px]">
-        <Seg full label="Trade" value={tab} onChange={(v) => set({ tab: v })} options={[{ value: "add", label: t("trade.tab.add") }, { value: "sell", label: t("trade.tab.sell") }]} />
+      <div className="mb-4 flex max-w-[480px] items-center gap-2">
+        <div className="flex-1">
+          <Seg full label="Trade" value={tab} onChange={(v) => set({ tab: v })} options={[{ value: "add", label: t("trade.tab.add") }, { value: "sell", label: t("trade.tab.sell") }]} />
+        </div>
+        <Link href="/history" aria-label={t("nav.history")} title={t("nav.history")}
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[14px] border border-line bg-s2 text-text hover:bg-s3">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+            <path d="M3 12a9 9 0 1 0 3-6.7M3 4v4h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M12 7.5V12l3 2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </Link>
       </div>
       {tab === "add" ? <AddTab /> : <SellPanel />}
     </div>

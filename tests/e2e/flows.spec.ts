@@ -90,3 +90,25 @@ test("settings: USD first and light theme", async ({ page }) => {
   await page.getByRole("tab", { name: "Light" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 });
+
+test("history shortcut beside the trade tabs", async ({ page }) => {
+  await connectDemo(page);
+  await page.goto("/trade");
+  await page.getByRole("link", { name: "History" }).click();
+  await expect(page).toHaveURL(/\/history/);
+  await expect(page.getByRole("heading", { name: "History" })).toBeVisible();
+});
+
+test("panels close back to the last main tab", async ({ page }) => {
+  await connectDemo(page);
+  await page.goto("/trade");
+  await page.getByRole("link", { name: "History" }).click();
+  await page.getByRole("button", { name: "Close" }).click();
+  await expect(page).toHaveURL(/\/trade/);
+  await page.goto("/learn");
+  await page.getByRole("button", { name: "Menu" }).click();
+  await page.getByRole("link", { name: "Settings" }).click();
+  await expect(page.getByRole("heading", { name: "Settings" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page).toHaveURL(/\/learn/);
+});
