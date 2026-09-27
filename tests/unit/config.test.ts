@@ -31,3 +31,17 @@ describe("config bundle", () => {
     err.mockRestore();
   });
 });
+
+import { validatorsDoc } from "@/adapters/content/remote";
+import { validatorsSchema } from "@/adapters/content/schemas";
+describe("validators from Supabase rows", () => {
+  it("builds the shared chain and per-subnet lists in rank order", () => {
+    const row = (scope: string, netuid: number | null, rank: number, name: string) => ({ scope, netuid, rank, name, hotkey: `5${name}`, take: 0.09, enabled: true });
+    const doc = validatorsSchema.parse(
+      validatorsDoc([row("all", null, 1, "B"), row("all", null, 0, "A"), row("netuid", 64, 0, "X"), { ...row("all", null, 2, "Off"), enabled: false }], 0.18),
+    );
+    expect(doc.all.map((v) => v.name)).toEqual(["A", "B"]);
+    expect(doc.perNetuid["64"]?.map((v) => v.name)).toEqual(["X"]);
+    expect(doc.maxTake).toBe(0.18);
+  });
+});

@@ -1,6 +1,6 @@
 import { impactLevel, quoteBuy, quoteRoot, quoteSell, type ImpactCfg } from "./quote";
 import { runGuards, type GuardCfg } from "./guards";
-import { resolveValidator, type ValidatorsDoc } from "./validators";
+import { permitsFrom, resolveValidator, type ValidatorsDoc } from "./validators";
 import type { Leg, Quote, Rao, Skip, SubnetLive } from "./types";
 
 // Plan → guards → per-leg quote → Quote. Pure; fed with fresh /api/pools data.
@@ -32,6 +32,7 @@ export function buildAddQuote(
 ): Quote {
   const out: Leg[] = [];
   const skipped: Skip[] = [];
+  const permitted = permitsFrom(ctx.pools);
   if (stake > 0n) {
     const v = resolveValidator(0, ctx.validators);
     if (v) out.push({ ...baseLeg("stakeRoot", 0, v), amountIn: stake, ...quoteRoot(stake), impact: "low" });
@@ -40,7 +41,7 @@ export function buildAddQuote(
   const { kept, skipped: s } = runGuards({
     rows: legs,
     pools: ctx.pools,
-    hasValidator: (n) => resolveValidator(n, ctx.validators) !== null,
+    hasValidator: (n) => resolveValidator(n, ctx.validators, permitted) !== null,
     cfg: ctx.cfg,
     reweight,
   });
@@ -48,7 +49,7 @@ export function buildAddQuote(
   const subnetLegs = kept
     .map((row) => {
       const pool = ctx.pools.get(row.netuid)!;
-      const v = resolveValidator(row.netuid, ctx.validators)!;
+      const v = resolveValidator(row.netuid, ctx.validators, permitted)!;
       const q = quoteBuy(row.amount, pool, ctx.cfg.limitTolerance);
       return { ...baseLeg("invest", row.netuid, v), amountIn: row.amount, ...q, impact: impactLevel(q.slip, q.poolShare, ctx.cfg) };
     })

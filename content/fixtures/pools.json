@@ -143,7 +143,10 @@
       "emissionOn": true,
       "mcapTao": 54600,
       "change7d": 2.4,
-      "change30d": -4.1
+      "change30d": -4.1,
+      "permits": [
+        "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty"
+      ]
     },
     {
       "netuid": 56,

@@ -86,15 +86,15 @@ export const sourceSchema = z.object({
 export const sourcesSchema = z.object({ sources: z.array(sourceSchema) });
 
 const validatorEntry = z.object({
-  name: z.string(),
+  name: z.string().min(1),
   hotkey: z.string().min(1),
-  maxTake: z.number().optional(),
   take: z.number().min(0).max(1).optional(),
 });
+/** `all`: shared chain for every subnet (primary, backup, …). `perNetuid`: tried first for that subnet. */
 export const validatorsSchema = z.object({
-  default: validatorEntry,
-  perNetuid: z.record(z.string(), validatorEntry),
-  fallback: validatorEntry,
+  maxTake: z.number().min(0).max(1),
+  all: z.array(validatorEntry).min(1),
+  perNetuid: z.record(z.string(), z.array(validatorEntry)),
 });
 
 export const sectionSchema = z.object({

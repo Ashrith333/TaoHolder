@@ -13,7 +13,7 @@ Everything that changes behaviour lives in data, not code. There are two copies 
 | Input sources | `config/sources.json` | `data_sources` rows |
 | Page sections | `config/layout.json` | `page_sections` rows |
 | Subnets (curated) | `subnets/<netuid>.json` | `subnets` rows |
-| Validators (D3) | `validators.json` | `validators` rows |
+| Validators (D3) | `validators.json` | `validators` rows + `app_config` key `validator-policy` |
 | UI copy | `copy/en.json` | `copy_strings` rows |
 
 **Precedence:** Supabase row (if valid) → `content/` file. An invalid row is logged and ignored, never shown. Copy strings merge: keys missing from Supabase still come from `en.json`.
@@ -58,3 +58,22 @@ Pages render the enabled `page_sections` rows for their page, ordered by `positi
 - **Replace a section:** build a new component (e.g. `features/account/components/TotalCardV2.tsx`), register it as `account.totalV2`, then point the row's `component` at it. Roll back by pointing it back.
 
 `pnpm content:check` fails if `layout.json` names a component that isn't registered.
+
+## Validators
+
+Each subnet gets an ordered chain of validators, and the first one that qualifies is used:
+
+1. The `scope = 'netuid'` rows for that subnet, lowest `rank` first (optional).
+2. Then the shared `scope = 'all'` rows, lowest `rank` first. This is the common primary plus backups that every subnet uses.
+
+An entry is skipped when its `take` is above `validator-policy.maxTake`, or when permit data is available and that hotkey has no validator permit on the subnet. If nothing qualifies, the leg is skipped with "No validator" (G3).
+
+- **One validator for everything:** put it in `all` at rank 0 and a second one at rank 1 as the backup. You don't need any per-subnet rows.
+- **A different validator on one subnet:** add a `netuid` row for that subnet. It keeps the shared chain as its backup.
+
+```sql
+insert into validators (scope, netuid, rank, name, hotkey, take)
+values ('netuid', 64, 0, 'Chutes partner', '5…', 0.09);
+```
+
+**Permit data:** add `permitsPath` to the Taostats `pools` source config (plus `permitNetuidField` / `permitHotkeyField` if the field names differ). Each pool then carries its permitted hotkeys, and the chain skips validators without a permit on that subnet. Without it, every configured validator is assumed to be allowed.

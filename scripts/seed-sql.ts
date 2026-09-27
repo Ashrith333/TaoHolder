@@ -35,10 +35,12 @@ export function seedSql(): string {
   }
   const v = read("content/validators.json");
   out.push("delete from public.validators;");
-  const vrow = (scope: string, netuid: number | null, e: { name: string; hotkey: string; maxTake?: number; take?: number }) =>
-    `insert into public.validators (scope, netuid, name, hotkey, max_take, take) values (${q(scope)}, ${netuid ?? "null"}, ${q(e.name)}, ${q(e.hotkey)}, ${e.maxTake ?? "null"}, ${e.take ?? "null"});`;
-  out.push(vrow("default", null, v.default), vrow("fallback", null, v.fallback));
-  for (const [n, e] of Object.entries(v.perNetuid)) out.push(vrow("netuid", Number(n), e as never));
+  type VE = { name: string; hotkey: string; take?: number };
+  const vrow = (scope: string, netuid: number | null, rank: number, e: VE) =>
+    `insert into public.validators (scope, netuid, rank, name, hotkey, take) values (${q(scope)}, ${netuid ?? "null"}, ${rank}, ${q(e.name)}, ${q(e.hotkey)}, ${e.take ?? "null"});`;
+  (v.all as VE[]).forEach((e, i) => out.push(vrow("all", null, i, e)));
+  for (const [n, list] of Object.entries(v.perNetuid)) (list as VE[]).forEach((e, i) => out.push(vrow("netuid", Number(n), i, e)));
+  out.push(`insert into public.app_config (key, value, description) values ('validator-policy', ${j({ maxTake: v.maxTake })}, 'Validator rules (D3)') on conflict (key) do update set value = excluded.value;`);
   const copy = read("content/copy/en.json") as Record<string, string>;
   const values = Object.entries(copy).map(([k, t]) => `('en', ${q(k)}, ${q(t)})`);
   out.push(`insert into public.copy_strings (locale, key, text) values ${values.join(",\n")} on conflict (locale, key) do update set text = excluded.text;`);
