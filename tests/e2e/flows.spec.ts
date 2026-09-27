@@ -90,3 +90,11 @@ test("settings: USD first and light theme", async ({ page }) => {
   await page.getByRole("tab", { name: "Light" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 });
+
+test("history shortcut beside the trade tabs", async ({ page }) => {
+  await connectDemo(page);
+  await page.goto("/trade");
+  await page.getByRole("link", { name: "History" }).click();
+  await expect(page).toHaveURL(/\/history/);
+  await expect(page.getByRole("heading", { name: "History" })).toBeVisible();
+});
