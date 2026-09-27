@@ -89,24 +89,40 @@ export type Quote = {
 };
 
 /** One on-chain transaction, as the user sees it in History. Amounts are TAO / tokens (display only). */
-export type HistoryLegType = "stake" | "invest" | "sell" | "unstake";
+export type HistoryLegType =
+  | "stake" // TAO → root (netuid 0)
+  | "invest" // TAO → subnet token
+  | "sell" // subnet token → TAO
+  | "unstake" // root → TAO
+  | "move" // stake moved between validators and/or subnets (move_stake / swap_stake)
+  | "sendStake" // stake given to another wallet (transfer_stake)
+  | "receiveStake" // stake received from another wallet
+  | "unstakeAll"; // unstake_all / unstake_all_alpha
 export type HistoryLeg = {
   type: HistoryLegType;
   netuid: number | null; // null = the source didn't say
-  tao: number; // TAO put in (stake/invest) or received (sell/unstake)
-  tokens?: number; // subnet tokens received (invest) or sold (sell)
+  fromNetuid?: number | null; // move: origin subnet
+  tao: number; // TAO put in (stake/invest) or received (sell/unstake); 0 when unknown
+  tokens?: number; // subnet tokens received (invest) or sold / moved / sent
   hotkey?: string;
-  estimate?: boolean; // from our quote, not yet confirmed by the indexer
+  fromHotkey?: string; // move: origin validator
+  validatorName?: string;
+  counterparty?: string; // send/receive stake: the other wallet
+  estimate?: boolean; // planned amount (from our quote or the call), not confirmed by events
 };
 export type HistoryStatus = "done" | "failed" | "pending";
 export type HistoryTx = {
   id: string;
-  kind: "trade" | "transfer";
+  kind: "trade" | "transfer" | "validatorChange" | "other";
   time: string;
   status: HistoryStatus;
-  reason?: string; // why it failed, in plain words
+  reason?: string; // why it failed, plain words (or the raw text when unknown)
+  reasonCode?: string; // chain error name, mapped to words via content/copy/errors.json
+  fee?: number; // network fee in TAO (charged even when a transaction fails)
   block?: number;
-  hash?: string; // extrinsic hash (0x…) or indexer id (block-index)
+  hash?: string; // extrinsic hash (0x…) when known
+  extrinsicId?: string; // indexer id "block-index", used for explorer links
   legs: HistoryLeg[];
   transfer?: { direction: "in" | "out"; tao: number; counterparty: string };
+  call?: string; // kind = other: the call name, e.g. "Proxy.add_proxy"
 };

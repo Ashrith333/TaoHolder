@@ -24,7 +24,8 @@ export function formatUsd(usd: number): string {
   return `$${grouped(usd, dp)}`;
 }
 
-export const formatTokens = (alpha: number) => grouped(floorTo(alpha, 1), 1);
+/** Subnet tokens: 1 decimal, or 4 below 1 so small amounts don't read as 0.3 / 0.0. */
+export const formatTokens = (alpha: number) => (Math.abs(alpha) < 1 ? grouped(floorTo(alpha, 4), 4) : grouped(floorTo(alpha, 1), 1));
 export const formatPrice = (priceTao: number) => `${priceTao.toFixed(3)} τ`;
 export const formatPct = (ratio: number, dp = 1) => `${(ratio * 100).toFixed(dp)}%`;
 

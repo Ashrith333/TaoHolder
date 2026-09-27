@@ -34,3 +34,11 @@ describe("format", () => {
     expect(fill("{x} TAO left of {total}", { x: 1, total: 2 })).toBe("1 TAO left of 2");
   });
 });
+
+import { formatTokens } from "@/services/format";
+describe("formatTokens", () => {
+  it("keeps precision for small amounts", () => {
+    expect(formatTokens(0.358966798)).toBe("0.3589");
+    expect(formatTokens(150.26)).toBe("150.2");
+  });
+});

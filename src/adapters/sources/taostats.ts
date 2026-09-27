@@ -1,7 +1,8 @@
 import "server-only";
 import type { Source } from "@/adapters/content/schemas";
 import { taoToRao } from "@/services/rao";
-import type { HistoryLeg, HistoryTx, SubnetLive } from "@/services/types";
+import type { SubnetLive } from "@/services/types";
+import { buildHistory } from "./historyBuilder";
 import { field, fillPath, getJson, rows, str } from "./http";
 import type { ProviderFactory } from "./types";
 
@@ -108,67 +109,33 @@ async function positions(src: Source, coldkey: string) {
   };
 }
 
-const get = (obj: unknown, key: string): unknown =>
-  key.split(".").reduce<unknown>((o, k) => (o && typeof o === "object" ? (o as Record<string, unknown>)[k] : undefined), obj);
-const ss58 = (v: unknown) => (typeof v === "string" ? v : typeof get(v, "ss58") === "string" ? (get(v, "ss58") as string) : "");
-
-/** Field names for delegation/transfer rows; override in config.historyFields. */
-const HISTORY_FIELDS = {
-  action: "action", netuid: "netuid", tao: "amount", alpha: "alpha", hotkey: "hotkey",
-  txId: "extrinsic_id", block: "block_number", time: "timestamp", from: "from", to: "to",
-};
-
-/** Stake/unstake events grouped per extrinsic (one batch = one card), plus transfers. */
-async function history(src: Source, coldkey: string, page: number, limit: number) {
-  const f = { ...HISTORY_FIELDS, ...(src.config.historyFields as Partial<typeof HISTORY_FIELDS> | undefined) };
+/**
+ * History = signed extrinsics (incl. failures) + stake events + transfers, merged by
+ * historyBuilder. Paths are editable per source (path / extrinsicsPath / transfersPath).
+ */
+async function history(src: Source, coldkey: string, page: number, limit: number, ss58Prefix: number) {
   const vars = { coldkey, page: page + 1, limit };
-  const [deleg, xfers] = await Promise.all([
-    getJson(src, fillPath(str(src.config.path, "/delegation/v1?nominator={coldkey}&page={page}&limit={limit}"), vars), ttl(src, "history", 300)),
-    typeof src.config.transfersPath === "string"
-      ? getJson(src, fillPath(src.config.transfersPath, vars), ttl(src, "history", 300)).catch(() => null)
-      : Promise.resolve(null),
+  const feed = (p: string) => getJson(src, fillPath(p, vars), ttl(src, "history", 60)).catch(() => null);
+  const [ex, ev, tr] = await Promise.all([
+    feed(str(src.config.extrinsicsPath, "/extrinsic/v1?signer_address={coldkey}&page={page}&limit={limit}")),
+    feed(str(src.config.path, "/delegation/v1?nominator={coldkey}&page={page}&limit={limit}")),
+    feed(str(src.config.transfersPath, "/transfer/v1?address={coldkey}&page={page}&limit={limit}")),
   ]);
-  const groups = new Map<string, HistoryTx>();
-  for (const r of rows(deleg)) {
-    const action = String(get(r, f.action) ?? "").toUpperCase();
-    const removing = action.includes("UNDELEGATE") || action.includes("UNSTAKE") || action.includes("REMOVE");
-    const rawNet = get(r, f.netuid);
-    const netuid = rawNet === undefined || rawNet === null || rawNet === "" ? null : Number(rawNet);
-    const leg: HistoryLeg = {
-      type: netuid === 0 ? (removing ? "unstake" : "stake") : removing ? "sell" : "invest",
-      netuid,
-      tao: field(r, f.tao) / 1e9,
-      tokens: netuid === 0 ? undefined : field(r, f.alpha) / 1e9 || undefined,
-      hotkey: ss58(get(r, f.hotkey)) || undefined,
-    };
-    const block = field(r, f.block) || undefined;
-    const id = String(get(r, f.txId) ?? `${block ?? "?"}-${groups.size}`);
-    const g = groups.get(id) ?? { id, kind: "trade" as const, time: String(get(r, f.time) ?? ""), status: "done" as const, block, hash: id, legs: [] };
-    g.legs.push(leg);
-    groups.set(id, g);
-  }
-  const transfers: HistoryTx[] = rows(xfers).map((r, i) => {
-    const from = ss58(get(r, f.from));
-    const out = from === coldkey;
-    const id = String(get(r, f.txId) ?? `t-${page}-${i}`);
-    return {
-      id, kind: "transfer", time: String(get(r, f.time) ?? ""), status: "done", block: field(r, f.block) || undefined, hash: id, legs: [],
-      transfer: { direction: out ? "out" : "in", tao: field(r, f.tao) / 1e9, counterparty: out ? ss58(get(r, f.to)) : from },
-    };
-  });
-  const items = [...groups.values(), ...transfers].sort((a, b) => b.time.localeCompare(a.time));
-  const more = (j: unknown, n: number) => {
-    const pag = (j as { pagination?: { next_page?: number | null } } | null)?.pagination;
-    return pag ? pag.next_page != null : n === limit;
-  };
-  return { items, hasMore: more(deleg, rows(deleg).length) || (xfers ? more(xfers, rows(xfers).length) : false) };
+  if (!ex && !ev && !tr) throw new Error(`${src.id}: all history feeds failed`);
+  const items = buildHistory(
+    { extrinsics: rows(ex) as Record<string, unknown>[], stakeEvents: rows(ev) as Record<string, unknown>[], transfers: rows(tr) as Record<string, unknown>[] },
+    coldkey,
+    ss58Prefix,
+  );
+  const more = (j: unknown) => (j as { pagination?: { next_page?: number | null } } | null)?.pagination?.next_page != null;
+  return { items, hasMore: more(ex) || more(ev) || more(tr) };
 }
 
 export const taostats: ProviderFactory = {
   subnets: (src) => ({ pools: () => pools(src), series: (n) => series(src, n) }),
   pools: (src) => ({ pools: () => pools(src) }),
   positions: (src) => ({ positions: (c) => positions(src, c) }),
-  history: (src) => ({ history: (c, p, l) => history(src, c, p, l) }),
+  history: (src) => ({ history: (c, p, l) => history(src, c, p, l, typeof src.config.ss58Prefix === "number" ? src.config.ss58Prefix : 42) }),
   price: (src) => ({
     usd: async () => {
       const json = await getJson(src, str(src.config.pricePath, "/price/latest/v1?asset=tao"), ttl(src, "price", 300));
