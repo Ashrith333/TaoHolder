@@ -17,6 +17,7 @@ const checks: [string, z.ZodType][] = [
   ["content/validators.json", S.validatorsSchema],
   ["content/copy/en.json", S.copySchema],
   ["content/copy/errors.json", S.copySchema],
+  ["content/config/funding.json", S.fundingSchema],
 ];
 for (const f of fs.readdirSync(path.join(root, "content/subnets"))) checks.push([`content/subnets/${f}`, S.subnetCuratedSchema]);
 

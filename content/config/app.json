@@ -6,16 +6,48 @@
   "refreshMs": 60000,
   "historyPageSize": 25,
   "tabs": [
-    { "href": "/account", "labelKey": "nav.account" },
-    { "href": "/trade", "labelKey": "nav.trade" },
-    { "href": "/learn", "labelKey": "nav.learn" }
+    {
+      "href": "/account",
+      "labelKey": "nav.account"
+    },
+    {
+      "href": "/trade",
+      "labelKey": "nav.trade"
+    },
+    {
+      "href": "/learn",
+      "labelKey": "nav.learn"
+    }
   ],
   "menu": [
-    { "href": "/history", "labelKey": "nav.history" },
-    { "href": "/settings", "labelKey": "nav.settings" },
-    { "href": "/legal/terms", "labelKey": "nav.terms" },
-    { "href": "/legal/risk", "labelKey": "nav.risk" },
-    { "href": "/legal/privacy", "labelKey": "nav.privacy" }
+    {
+      "href": "/fund",
+      "labelKey": "nav.fund"
+    },
+    {
+      "href": "/history",
+      "labelKey": "nav.history"
+    },
+    {
+      "href": "/settings",
+      "labelKey": "nav.settings"
+    },
+    {
+      "href": "/legal/terms",
+      "labelKey": "nav.terms"
+    },
+    {
+      "href": "/legal/risk",
+      "labelKey": "nav.risk"
+    },
+    {
+      "href": "/legal/privacy",
+      "labelKey": "nav.privacy"
+    }
   ],
-  "amountBuckets": [1, 10, 100]
+  "amountBuckets": [
+    1,
+    10,
+    100
+  ]
 }

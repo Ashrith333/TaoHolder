@@ -19,6 +19,7 @@ export type ConfigBundle = {
   sections: S.Section[];
   copy: S.Copy;
   errors: S.Copy;
+  funding: S.FundingConfig;
   subnets: SubnetCurated[];
   origin: Record<string, "supabase" | "local">;
 };
@@ -58,6 +59,7 @@ export function buildBundle(remote: RemoteDocs | null): ConfigBundle {
     validators: pick("validators", S.validatorsSchema, remote?.validators, localDocs.validators, origin),
     copy: { ...localDocs.copy, ...pick("copy", S.copySchema, remote?.copy, localDocs.copy, origin) },
     errors: pick("errors", S.copySchema, c.errors, localDocs.errors, origin),
+    funding: pick("funding", S.fundingSchema, c.funding, localDocs.funding, origin),
     sources: sources.filter((s) => s.network === network && s.enabled).sort((a, b) => a.priority - b.priority),
     sections: sections.filter((s) => s.enabled).sort((a, b) => a.position - b.position),
     subnets: subnets.sort((a, b) => a.netuid - b.netuid),
@@ -79,10 +81,16 @@ export async function loadConfig(): Promise<ConfigBundle> {
 }
 
 /** What the browser needs. Server-only source config (API key env names, paths) is stripped. */
-export type ClientConfig = Omit<ConfigBundle, "sources"> & { rpcWs: string | null; explorer: string | null };
+export type ClientFunding = Omit<S.FundingConfig, "providers"> & {
+  providers: { id: string; name: string; kind: string; custodial: boolean }[];
+};
+export type ClientConfig = Omit<ConfigBundle, "sources" | "funding"> & { rpcWs: string | null; explorer: string | null; funding: ClientFunding };
 
 export function toClientConfig(b: ConfigBundle): ClientConfig {
-  const { sources, ...rest } = b;
+  const { sources, funding, ...rest } = b;
   const first = (kind: string) => sources.find((s) => s.kind === kind)?.url ?? null;
-  return { ...rest, rpcWs: first("rpc_ws") ?? process.env.NEXT_PUBLIC_RPC_WS_URL ?? null, explorer: first("explorer") };
+  const providers = funding.providers
+    .filter((p) => p.enabled && p.networks.includes(b.network))
+    .map(({ id, name, kind, custodial }) => ({ id, name, kind, custodial }));
+  return { ...rest, funding: { ...funding, providers }, rpcWs: first("rpc_ws") ?? process.env.NEXT_PUBLIC_RPC_WS_URL ?? null, explorer: first("explorer") };
 }

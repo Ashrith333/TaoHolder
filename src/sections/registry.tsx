@@ -6,6 +6,7 @@ import { PreviewDesk } from "@/features/preview";
 import { BusinessBlock, Catalog, LinksBlock, MarketBlock, SubnetHead } from "@/features/learn";
 import { HistoryList } from "@/features/history";
 import { SettingsPanel } from "@/features/settings";
+import { FundPanel } from "@/features/funding";
 import { Notice } from "./Notice";
 
 // Section registry: layout config (Supabase page_sections or content/config/layout.json)
@@ -28,6 +29,7 @@ export const SECTIONS: Record<string, ComponentType<SectionProps>> = {
   "learn.links": ({ netuid }) => <LinksBlock netuid={netuid ?? 0} />,
   "history.list": HistoryList,
   "settings.panel": SettingsPanel,
+  "funding.panel": FundPanel,
   "common.notice": Notice,
 };
 

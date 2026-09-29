@@ -107,6 +107,22 @@ export const sectionSchema = z.object({
 });
 export const layoutSchema = z.object({ sections: z.array(sectionSchema) });
 
+const fundingAssetSchema = z.object({
+  id: z.string(), symbol: z.string(), network: z.string(), label: z.string(),
+  evmChainId: z.number().int().optional(), tokenAddress: z.string().optional(), decimals: z.number().int().optional(),
+});
+export const fundingSchema = z.object({
+  enabled: z.boolean(),
+  providers: z.array(z.object({
+    id: z.string(), kind: z.enum(["swap-service", "bridge", "contract"]), name: z.string(), enabled: z.boolean(),
+    networks: z.array(z.enum(["mainnet", "testnet", "local"])), custodial: z.boolean(),
+    config: z.record(z.string(), z.unknown()).default({}),
+  })),
+  assets: z.array(fundingAssetSchema).min(1),
+  minTao: z.number().min(0),
+});
+export type FundingConfig = z.infer<typeof fundingSchema>;
+
 export const copySchema = z.record(z.string(), z.string());
 
 export const subnetCuratedSchema = z.object({

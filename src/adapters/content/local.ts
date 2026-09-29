@@ -8,13 +8,14 @@ import buckets from "@content/config/buckets.json";
 import wallets from "@content/config/wallets.json";
 import sources from "@content/config/sources.json";
 import layout from "@content/config/layout.json";
+import funding from "@content/config/funding.json";
 import validators from "@content/validators.json";
 import copy from "@content/copy/en.json";
 import errors from "@content/copy/errors.json";
 
 // Local JSON in content/ is the source of truth in git and the fallback when Supabase
 // is not configured or unreachable.
-export const localDocs = { app, features, guards, buckets, wallets, sources, layout, validators, copy, errors };
+export const localDocs = { app, features, guards, buckets, wallets, sources, layout, validators, copy, errors, funding };
 
 export function localSubnets(): unknown[] {
   const dir = path.join(process.cwd(), "content", "subnets");

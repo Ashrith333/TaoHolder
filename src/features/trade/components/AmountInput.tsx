@@ -1,5 +1,6 @@
 "use client";
-import { useT } from "@/providers/ConfigProvider";
+import Link from "next/link";
+import { useConfig, useT } from "@/providers/ConfigProvider";
 import { raoToInput } from "@/services/rao";
 import { useMoney } from "@/hooks/money";
 import type { TradeModel } from "../useTradeModel";
@@ -7,6 +8,7 @@ import type { TradeModel } from "../useTradeModel";
 /** Numeric TAO input, 4 decimals max, shortcuts 50% / Max (Max = free − fee buffer). */
 export function AmountInput({ m }: { m: TradeModel }) {
   const t = useT();
+  const { funding } = useConfig();
   const money = useMoney();
   const set = m.st.set;
   const onChange = (v: string) => {
@@ -39,6 +41,9 @@ export function AmountInput({ m }: { m: TradeModel }) {
           <button className="h-8 rounded-full border border-line px-3 text-[12px] font-bold" onClick={() => set({ amount: raoToInput(m.max) })}>{t("trade.max")}</button>
         </span>
       </div>
+      {funding.enabled && funding.providers.length ? (
+        <Link href="/fund" className="mt-3 inline-block text-[12px] font-semibold underline underline-offset-4">{t("fund.topUpLink")}</Link>
+      ) : null}
     </div>
   );
 }

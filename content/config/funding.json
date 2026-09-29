@@ -1,0 +1,66 @@
+{
+  "note": "Pay with another token. Providers are tried in the order listed; set enabled to switch one on or off. Keys live in env vars named by apiKeyEnv.",
+  "enabled": true,
+  "providers": [
+    {
+      "id": "demo",
+      "kind": "swap-service",
+      "name": "Demo swap",
+      "enabled": true,
+      "networks": ["local", "testnet"],
+      "custodial": true,
+      "config": {}
+    },
+    {
+      "id": "changenow",
+      "kind": "swap-service",
+      "name": "ChangeNOW",
+      "enabled": true,
+      "networks": ["mainnet"],
+      "custodial": true,
+      "config": {
+        "baseUrl": "https://api.changenow.io/v2",
+        "apiKeyEnv": "CHANGENOW_API_KEY",
+        "taoCurrency": "tao",
+        "taoNetwork": "tao",
+        "flow": "standard",
+        "trackUrl": "https://changenow.io/exchange/txs/{id}"
+      }
+    },
+    {
+      "id": "forevermoney",
+      "kind": "bridge",
+      "name": "ForeverMoney (Chainlink CCIP)",
+      "enabled": false,
+      "networks": ["mainnet"],
+      "custodial": false,
+      "config": {
+        "status": "Contracts from Talisman's integration; ABI not verified yet. Keep disabled until tested with a small amount.",
+        "sourceChains": {
+          "base": { "chainId": 8453, "gateway": "0x5EF3d7D19e4b233a1A169DA0d5CB02ec6b160a2C", "wtao": "0xf3081494B87e8D5fb7960f066E931D1D0e6E3d67", "ccipSelector": "15971525489660198786" }
+        },
+        "bittensor": { "chainId": 964, "ccipSelector": "2135107236357186872", "gateway": "0x998f20Fea90bF7792774dECc7f994716442B1705" },
+        "ccipExplorer": "https://ccip.chain.link/msg/{messageId}"
+      }
+    },
+    {
+      "id": "own-contract",
+      "kind": "contract",
+      "name": "taoholder contract",
+      "enabled": false,
+      "networks": ["mainnet", "testnet"],
+      "custodial": false,
+      "config": { "status": "Placeholder for a future taoholder router contract." }
+    }
+  ],
+  "assets": [
+    { "id": "eth:eth", "symbol": "ETH", "network": "eth", "label": "ETH on Ethereum", "evmChainId": 1, "decimals": 18 },
+    { "id": "eth:base", "symbol": "ETH", "network": "base", "label": "ETH on Base", "evmChainId": 8453, "decimals": 18 },
+    { "id": "usdc:eth", "symbol": "USDC", "network": "eth", "label": "USDC on Ethereum", "evmChainId": 1, "tokenAddress": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", "decimals": 6 },
+    { "id": "usdc:base", "symbol": "USDC", "network": "base", "label": "USDC on Base", "evmChainId": 8453, "tokenAddress": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", "decimals": 6 },
+    { "id": "usdt:eth", "symbol": "USDT", "network": "eth", "label": "USDT on Ethereum", "evmChainId": 1, "tokenAddress": "0xdAC17F958D2ee523a2206206994597C13D831ec7", "decimals": 6 },
+    { "id": "sol:sol", "symbol": "SOL", "network": "sol", "label": "SOL on Solana" },
+    { "id": "btc:btc", "symbol": "BTC", "network": "btc", "label": "Bitcoin" }
+  ],
+  "minTao": 0.05
+}
